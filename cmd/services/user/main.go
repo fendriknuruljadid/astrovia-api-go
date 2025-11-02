@@ -2,14 +2,17 @@ package main
 
 import (
     "github.com/gin-gonic/gin"
-    "astrovia-api-go/internal/package/db"
+    "astrovia-api-go/internal/packages/db"
     "astrovia-api-go/internal/services/user/handlers"
+    "astrovia-api-go/internal/middlewares"
 )
 
 func main() {
     db.Connect()
 
     r := gin.Default()
+    r.Use(middlewares.RequestID())
+    r.Use(middlewares.ErrorHandler())
 
     r.GET("/users", handlers.GetUsers)
     r.GET("/users/:id", handlers.GetUserByID)

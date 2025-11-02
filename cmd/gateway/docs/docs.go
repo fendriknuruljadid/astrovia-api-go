@@ -173,10 +173,10 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
                 "name": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }
