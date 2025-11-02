@@ -1,0 +1,15 @@
+FROM golang:1.25-alpine
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY cmd/services/user ./cmd/services/user
+COPY internal/services/user ./internal/services/user
+
+RUN go build -o user-service ./cmd/services/user
+
+EXPOSE 2001
+
+CMD ["./user-service"]

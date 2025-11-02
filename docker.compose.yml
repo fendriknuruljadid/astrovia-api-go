@@ -1,0 +1,39 @@
+version: '3.9'
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.gateway
+    ports:
+      - "2000:2000"
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
+    networks:
+      - internal_net
+
+  user-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.user
+    networks:
+      - internal_net
+
+  product-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.product
+    networks:
+      - internal_net
+
+  order-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.order
+    networks:
+      - internal_net
+
+networks:
+  internal_net:
+    driver: bridge
