@@ -15,9 +15,9 @@ type User struct {
     bun.BaseModel `bun:"table:users"`
 
     ID        string    `bun:"id,pk,notnull" json:"id"`
-    Name      string    `json:"name" validate:"required,min=3"`
-    Email     string    `json:"email" validate:"required,email"`
-    Password  string    `json:"password" validate:"required,min=6"`
+    Name      string    `json:"name"`
+    Email     string    `json:"email"`
+    Password  string    `json:"password"`
     CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp" json:"created_at"`
     UpdatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp" json:"updated_at"`
 }

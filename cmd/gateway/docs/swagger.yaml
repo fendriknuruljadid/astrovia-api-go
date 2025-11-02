@@ -1,12 +1,13 @@
 definitions:
   routes.User:
     properties:
-      email:
+      code:
+        type: integer
+      data: {}
+      message:
         type: string
-      name:
-        type: string
-      password:
-        type: string
+      status:
+        type: boolean
     type: object
 info:
   contact: {}
@@ -55,7 +56,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -73,7 +74,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -93,7 +94,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       - description: User info
         in: body
         name: user

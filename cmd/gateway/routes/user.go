@@ -4,10 +4,13 @@ package routes
 import "github.com/gofiber/fiber/v2"
 
 // =================== Dummy User model untuk Swagger ===================
+
+
 type User struct {
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Password string `json:"password"`
+	Status  bool        `json:"status"`
+    Code    int         `json:"code"`
+    Message string      `json:"message"`
+    Data    interface{} `json:"data"`
 }
 
 // =================== Dummy Handlers untuk Swagger ===================
@@ -24,7 +27,7 @@ func GetUsersHandler(c *fiber.Ctx) error { return nil }
 // @Description Get single user
 // @Tags users
 // @Produce json
-// @Param id path int true "User ID"
+// @Param id path string true "User ID"
 // @Success 200 {object} routes.User
 // @Router /users/{id} [get]
 func GetUserHandler(c *fiber.Ctx) error { return nil }
@@ -44,7 +47,7 @@ func CreateUserHandler(c *fiber.Ctx) error { return nil }
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param id path int true "User ID"
+// @Param id path string true "User ID"
 // @Param user body routes.User true "User info"
 // @Success 200 {object} routes.User
 // @Router /users/{id} [put]
@@ -53,7 +56,7 @@ func UpdateUserHandler(c *fiber.Ctx) error { return nil }
 // @Summary Delete user
 // @Description Delete user by ID
 // @Tags users
-// @Param id path int true "User ID"
+// @Param id path string true "User ID"
 // @Success 200 {object} map[string]bool
 // @Router /users/{id} [delete]
 func DeleteUserHandler(c *fiber.Ctx) error { return nil }

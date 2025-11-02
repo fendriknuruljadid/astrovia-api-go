@@ -4,42 +4,45 @@ import (
     "github.com/gin-gonic/gin"
     "astrovia-api-go/internal/services/user/models"
     "astrovia-api-go/internal/services/user/repository"
+    "astrovia-api-go/internal/services/user/dto"
     "net/http"
     "astrovia-api-go/internal/packages/response"
     "github.com/go-playground/validator/v10"
     "astrovia-api-go/internal/packages/errors"
     "astrovia-api-go/internal/packages/utils"
+    
 )
 
 var validate = validator.New()
 
 func CreateUser(c *gin.Context) {
-    var body models.User
+    var req dto.CreateDTO
 
-    // JSON binding error
-    if err := c.ShouldBindJSON(&body); err != nil {
-        c.Error(errors.NewBadRequest("invalid request payload", err.Error()))
+    if err := c.ShouldBindJSON(&req); err != nil {
+        // Deteksi apakah ini validation error dari validator bawaan Gin
+        if ve, ok := err.(validator.ValidationErrors); ok {
+            c.JSON(402, response.Error(402, "validation failed", utils.ValidationErrors(ve)))
+            return
+        }
+    
+        // Kalau bukan validasi, baru fallback ke invalid JSON
+        c.JSON(400, response.Error(400, "invalid request payload", err.Error()))
         return
     }
-
-    // Validation error
-    if err := utils.Validate.Struct(body); err != nil {
-        c.Error(errors.NewBadRequest("validation failed", utils.ValidationErrors(err)))
-        return
+    user := models.User{
+        Name:     req.Name,
+        Email:    req.Email,
+        Password: req.Password,
     }
 
-    // Database insertion
-    if err := repository.CreateUser(&body); err != nil {
+    if err := repository.CreateUser(&user); err != nil {
         c.Error(errors.NewInternal(utils.ParseDBError(err)))
         return
     }
 
-    // Success
-    c.JSON(201, response.Success(
-        201,
-        "successfully",
-        body,
-    ))
+    res := dto.ToResponseDTO(&user)
+
+    c.JSON(201, response.Success(201, "success", res))
 }
 
 func GetUsers(c *gin.Context) {
@@ -48,8 +51,11 @@ func GetUsers(c *gin.Context) {
         c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
     }
-    c.JSON(http.StatusOK, users)
+
+    res := dto.ToResponseDTOs(users)
+    c.JSON(200, response.Success(200, "success", res))
 }
+
 
 func GetUserByID(c *gin.Context) {
     id := c.Param("id")
@@ -58,38 +64,70 @@ func GetUserByID(c *gin.Context) {
         c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
         return
     }
-    c.JSON(http.StatusOK, user)
+    res := dto.ToResponseDTO(user)
+    c.JSON(200, response.Success(200, "success", res))
 }
 
 func UpdateUser(c *gin.Context) {
     id := c.Param("id")
-    var body models.User
-
-    if err := c.ShouldBindJSON(&body); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+    
+    var req dto.UpdateDTO
+    if err := c.ShouldBindJSON(&req); err != nil {
+        // Deteksi apakah ini validation error dari validator bawaan Gin
+        if ve, ok := err.(validator.ValidationErrors); ok {
+            c.JSON(402, response.Error(402, "validation failed", utils.ValidationErrors(ve)))
+            return
+        }
+    
+        // Kalau bukan validasi, baru fallback ke invalid JSON
+        c.JSON(400, response.Error(400, "invalid request payload", err.Error()))
         return
     }
 
-    if err := validate.Struct(body); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+    user, err := repository.GetUserByID(id)
+    if err != nil {
+        c.Error(errors.NewNotFound("user not found"))
         return
     }
 
-    body.ID = id
+    // Apply updates safely
+    if req.Name != nil {
+        user.Name = *req.Name
+    }
+    if req.Email != nil {
+        user.Email = *req.Email
+    }
+    if req.Password != nil {
+        user.Password = *req.Password
+    }
 
-    if err := repository.UpdateUser(&body); err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+    if err := repository.UpdateUser(user); err != nil {
+        c.Error(errors.NewInternal(utils.ParseDBError(err)))
         return
     }
 
-    c.JSON(http.StatusOK, body)
+    c.JSON(200, response.Success(200, "updated", dto.ToResponseDTO(user)))
 }
 
 func DeleteUser(c *gin.Context) {
     id := c.Param("id")
-    if err := repository.DeleteUser(id); err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+
+    // Cek dulu apakah user ada
+    user, err := repository.GetUserByID(id)
+    if err != nil || user == nil {
+        c.Error(errors.NewNotFound("user not found"))
         return
     }
-    c.JSON(http.StatusOK, gin.H{"deleted": true})
+
+    // Jika ada, lanjut hapus
+    if err := repository.DeleteUser(id); err != nil {
+        c.Error(errors.NewInternal(utils.ParseDBError(err)))
+        return
+    }
+
+    c.JSON(200, response.Success(200, "deleted successfully", gin.H{
+        "deleted": true,
+        "id":      id,
+    }))
 }
+
