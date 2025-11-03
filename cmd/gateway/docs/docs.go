@@ -9,7 +9,10 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "API Support",
+            "email": "dev@astrovia.id"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -17,6 +20,14 @@ const docTemplate = `{
     "paths": {
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
                 "description": "Get list of users",
                 "produces": [
                     "application/json"
@@ -38,6 +49,14 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
                 "description": "Create new user",
                 "consumes": [
                     "application/json"
@@ -72,6 +91,14 @@ const docTemplate = `{
         },
         "/users/{id}": {
             "get": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
                 "description": "Get single user",
                 "produces": [
                     "application/json"
@@ -99,6 +126,14 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
                 "description": "Update user by ID",
                 "consumes": [
                     "application/json"
@@ -138,6 +173,14 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
                 "description": "Delete user by ID",
                 "tags": [
                     "users"
@@ -170,29 +213,42 @@ const docTemplate = `{
         "routes.User": {
             "type": "object",
             "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "data": {},
-                "message": {
+                "email": {
                     "type": "string"
                 },
-                "status": {
-                    "type": "boolean"
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "X-Signature": {
+            "description": "Signature HMAC SHA256 untuk validasi integritas request",
+            "type": "apiKey",
+            "name": "X-Signature",
+            "in": "header"
+        },
+        "X-Timestamp": {
+            "description": "Timestamp UTC format RFC3339 (contoh: 2025-11-03T09:10:00Z)",
+            "type": "apiKey",
+            "name": "X-Timestamp",
+            "in": "header"
         }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
+	Version:          "1.1",
 	Host:             "",
-	BasePath:         "",
+	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "Astrovia Gateway API",
+	Description:      "API Gateway Astrovia AI.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

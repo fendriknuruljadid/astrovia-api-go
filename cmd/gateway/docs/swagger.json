@@ -1,11 +1,26 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "API Gateway Astrovia AI.",
+        "title": "Astrovia Gateway API",
+        "contact": {
+            "name": "API Support",
+            "email": "dev@astrovia.id"
+        },
+        "version": "1.1"
     },
+    "basePath": "/",
     "paths": {
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
                 "description": "Get list of users",
                 "produces": [
                     "application/json"
@@ -27,6 +42,14 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
                 "description": "Create new user",
                 "consumes": [
                     "application/json"
@@ -61,6 +84,14 @@
         },
         "/users/{id}": {
             "get": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
                 "description": "Get single user",
                 "produces": [
                     "application/json"
@@ -88,6 +119,14 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
                 "description": "Update user by ID",
                 "consumes": [
                     "application/json"
@@ -127,6 +166,14 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
                 "description": "Delete user by ID",
                 "tags": [
                     "users"
@@ -159,17 +206,30 @@
         "routes.User": {
             "type": "object",
             "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "data": {},
-                "message": {
+                "email": {
                     "type": "string"
                 },
-                "status": {
-                    "type": "boolean"
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "X-Signature": {
+            "description": "Signature HMAC SHA256 untuk validasi integritas request",
+            "type": "apiKey",
+            "name": "X-Signature",
+            "in": "header"
+        },
+        "X-Timestamp": {
+            "description": "Timestamp UTC format RFC3339 (contoh: 2025-11-03T09:10:00Z)",
+            "type": "apiKey",
+            "name": "X-Timestamp",
+            "in": "header"
         }
     }
 }

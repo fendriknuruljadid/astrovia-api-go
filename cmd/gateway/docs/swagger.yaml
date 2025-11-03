@@ -1,16 +1,21 @@
+basePath: /
 definitions:
   routes.User:
     properties:
-      code:
-        type: integer
-      data: {}
-      message:
+      email:
         type: string
-      status:
-        type: boolean
+      name:
+        type: string
+      password:
+        type: string
     type: object
 info:
-  contact: {}
+  contact:
+    email: dev@astrovia.id
+    name: API Support
+  description: API Gateway Astrovia AI.
+  title: Astrovia Gateway API
+  version: "1.1"
 paths:
   /users:
     get:
@@ -24,6 +29,9 @@ paths:
             items:
               $ref: '#/definitions/routes.User'
             type: array
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
       summary: Get all users
       tags:
       - users
@@ -45,6 +53,9 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/routes.User'
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
       summary: Create user
       tags:
       - users
@@ -64,6 +75,9 @@ paths:
             additionalProperties:
               type: boolean
             type: object
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
       summary: Delete user
       tags:
       - users
@@ -82,6 +96,9 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/routes.User'
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
       summary: Get user by ID
       tags:
       - users
@@ -108,7 +125,21 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/routes.User'
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
       summary: Update user
       tags:
       - users
+securityDefinitions:
+  X-Signature:
+    description: Signature HMAC SHA256 untuk validasi integritas request
+    in: header
+    name: X-Signature
+    type: apiKey
+  X-Timestamp:
+    description: 'Timestamp UTC format RFC3339 (contoh: 2025-11-03T09:10:00Z)'
+    in: header
+    name: X-Timestamp
+    type: apiKey
 swagger: "2.0"
