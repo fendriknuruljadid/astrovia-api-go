@@ -17,6 +17,6 @@ func main() {
 	mac.Write([]byte(msg))
 	signature := hex.EncodeToString(mac.Sum(nil))
 
-	fmt.Println("X-Timestamp:", timestamp)
 	fmt.Println("X-Signature:", signature)
+	fmt.Println("X-Timestamp:", timestamp)
 }

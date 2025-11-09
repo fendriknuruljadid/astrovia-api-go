@@ -21,7 +21,7 @@ type User struct {
 // @Security X-Timestamp
 // @Produce json
 // @Success 200 {array} routes.User
-// @Router /users [get]
+// @Router /v1/users [get]
 func GetUsersHandler(c *fiber.Ctx) error { return nil }
 
 // @Summary Get user by ID
@@ -32,7 +32,7 @@ func GetUsersHandler(c *fiber.Ctx) error { return nil }
 // @Produce json
 // @Param id path string true "User ID"
 // @Success 200 {object} routes.User
-// @Router /users/{id} [get]
+// @Router /v1/users/{id} [get]
 func GetUserHandler(c *fiber.Ctx) error { return nil }
 
 // @Summary Create user
@@ -44,7 +44,7 @@ func GetUserHandler(c *fiber.Ctx) error { return nil }
 // @Produce json
 // @Param user body routes.User true "User info"
 // @Success 201 {object} routes.User
-// @Router /users [post]
+// @Router /v1/users [post]
 func CreateUserHandler(c *fiber.Ctx) error { return nil }
 
 // @Summary Update user
@@ -57,7 +57,7 @@ func CreateUserHandler(c *fiber.Ctx) error { return nil }
 // @Param id path string true "User ID"
 // @Param user body routes.User true "User info"
 // @Success 200 {object} routes.User
-// @Router /users/{id} [put]
+// @Router /v1/users/{id} [put]
 func UpdateUserHandler(c *fiber.Ctx) error { return nil }
 
 // @Summary Delete user
@@ -67,5 +67,5 @@ func UpdateUserHandler(c *fiber.Ctx) error { return nil }
 // @Security X-Timestamp
 // @Param id path string true "User ID"
 // @Success 200 {object} map[string]bool
-// @Router /users/{id} [delete]
+// @Router /v1/users/{id} [delete]
 func DeleteUserHandler(c *fiber.Ctx) error { return nil }

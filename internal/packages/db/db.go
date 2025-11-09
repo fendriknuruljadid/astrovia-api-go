@@ -2,6 +2,9 @@ package db
 
 import (
     "database/sql"
+    "log"
+    "os"
+    "github.com/joho/godotenv"
     "github.com/uptrace/bun"
     "github.com/uptrace/bun/driver/pgdriver"
     "github.com/uptrace/bun/dialect/pgdialect"
@@ -10,13 +13,26 @@ import (
 var DB *bun.DB
 
 func Connect() {
+    // load .env
+    _ = godotenv.Load()
+
+    // ambil dari env
+    dsn := os.Getenv("DB_DSN")
+    if dsn == "" {
+        log.Fatal("DB_DSN tidak ditemukan di .env")
+    }
+
+    // buka koneksi
     sqldb := sql.OpenDB(pgdriver.NewConnector(
-        pgdriver.WithDSN("postgres://postgres:Cheat1234@localhost:5432/astrovia_new?sslmode=disable"),
+        pgdriver.WithDSN(dsn),
     ))
 
     DB = bun.NewDB(sqldb, pgdialect.New())
-    // optional: cek koneksi
+
+    // test koneksi
     if err := DB.Ping(); err != nil {
-        panic(err)
+        log.Fatal(err)
     }
+
+    log.Println("[DB] Connected ✅")
 }

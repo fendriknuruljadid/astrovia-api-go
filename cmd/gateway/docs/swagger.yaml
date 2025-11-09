@@ -17,7 +17,7 @@ info:
   title: Astrovia Gateway API
   version: "1.1"
 paths:
-  /users:
+  /v1/users:
     get:
       description: Get list of users
       produces:
@@ -59,7 +59,7 @@ paths:
       summary: Create user
       tags:
       - users
-  /users/{id}:
+  /v1/users/{id}:
     delete:
       description: Delete user by ID
       parameters:

@@ -13,7 +13,7 @@ import (
 
 const (
 	CLIENT_SECRET = "4sTrovia53cretProd"
-	MAX_TIME_DIFF = 300 // detik
+	MAX_TIME_DIFF = 3000 // detik
 )
 
 func generateSignature(secret, timestamp string) string {

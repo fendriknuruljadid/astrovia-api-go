@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/proxy"
 	"github.com/gofiber/swagger"
 	_ "astrovia-api-go/cmd/gateway/docs"
-	_ "astrovia-api-go/cmd/gateway/routes"
+	_ "astrovia-api-go/cmd/gateway/swagger/v1"
 	"astrovia-api-go/internal/middlewares"
 )
 
@@ -44,11 +44,18 @@ func main() {
 	// Swagger UI
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
-	app.Use("/users", middlewares.SignatureClientMiddleware())
-	// Proxy semua request /users ke service Gin
-	app.All("/users/*", func(c *fiber.Ctx) error {
-		return proxy.Do(c, "http://localhost:2001"+c.OriginalURL())
+	apiV1 := app.Group("/v1")
+
+	// Semua route users v1
+	userGrp := apiV1.Group("/users")
+	userGrp.Use(middlewares.SignatureClientMiddleware())
+
+	// Proxy → Service User (Gin)
+	userGrp.All("/*", func(c *fiber.Ctx) error {
+		target := "http://localhost:2001" + c.OriginalURL()
+		return proxy.Do(c, target)
 	})
+
 
 	// Jalankan server gateway
 	app.Listen(":2000")

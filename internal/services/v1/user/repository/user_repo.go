@@ -4,7 +4,7 @@ import (
     "context"
     "fmt"
     "astrovia-api-go/internal/packages/db"
-    "astrovia-api-go/internal/services/user/models"
+    "astrovia-api-go/internal/services/v1/user/models"
 )
 
 func CreateUser(user *models.User) error {

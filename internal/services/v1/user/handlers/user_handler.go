@@ -2,9 +2,9 @@ package handlers
 
 import (
     "github.com/gin-gonic/gin"
-    "astrovia-api-go/internal/services/user/models"
-    "astrovia-api-go/internal/services/user/repository"
-    "astrovia-api-go/internal/services/user/dto"
+    "astrovia-api-go/internal/services/v1/user/models"
+    "astrovia-api-go/internal/services/v1/user/repository"
+    "astrovia-api-go/internal/services/v1/user/dto"
     "net/http"
     "astrovia-api-go/internal/packages/response"
     "github.com/go-playground/validator/v10"
