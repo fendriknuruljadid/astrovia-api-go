@@ -6,7 +6,7 @@ import (
     "time"
     "strings"
 
-    "astrovia-api-go/internal/packages/utils"
+    "app/internal/packages/utils"
     "github.com/uptrace/bun"
     "golang.org/x/crypto/bcrypt"
 )

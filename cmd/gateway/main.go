@@ -5,9 +5,9 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/proxy"
 	"github.com/gofiber/swagger"
-	_ "astrovia-api-go/cmd/gateway/docs"
-	_ "astrovia-api-go/cmd/gateway/swagger/v1"
-	"astrovia-api-go/internal/middlewares"
+	_ "app/cmd/gateway/docs"
+	_ "app/cmd/gateway/swagger/v1"
+	"app/internal/middlewares"
 )
 
 
@@ -17,6 +17,11 @@ import (
 // @version 1.1
 // @description API Gateway Astrovia AI.
 // @BasePath /
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Format: Bearer <token>
 
 // @securityDefinitions.apikey X-Signature
 // @in header
@@ -53,6 +58,16 @@ func main() {
 	// Proxy → Service User (Gin)
 	userGrp.All("/*", func(c *fiber.Ctx) error {
 		target := "http://localhost:2001" + c.OriginalURL()
+		return proxy.Do(c, target)
+	})
+
+
+	authGrp := apiV1.Group("/generate-token")
+	authGrp.Use(middlewares.SignatureClientMiddleware())
+
+	// Proxy → Service User (Gin)
+	authGrp.All("/*", func(c *fiber.Ctx) error {
+		target := "http://localhost:2002" + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
 

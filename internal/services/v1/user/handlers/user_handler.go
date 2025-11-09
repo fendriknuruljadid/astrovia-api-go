@@ -2,14 +2,14 @@ package handlers
 
 import (
     "github.com/gin-gonic/gin"
-    "astrovia-api-go/internal/services/v1/user/models"
-    "astrovia-api-go/internal/services/v1/user/repository"
-    "astrovia-api-go/internal/services/v1/user/dto"
+    "app/internal/services/v1/user/models"
+    "app/internal/services/v1/user/repository"
+    "app/internal/services/v1/user/dto"
     "net/http"
-    "astrovia-api-go/internal/packages/response"
+    "app/internal/packages/response"
     "github.com/go-playground/validator/v10"
-    "astrovia-api-go/internal/packages/errors"
-    "astrovia-api-go/internal/packages/utils"
+    "app/internal/packages/errors"
+    "app/internal/packages/utils"
     
 )
 
@@ -48,7 +48,7 @@ func CreateUser(c *gin.Context) {
 func GetUsers(c *gin.Context) {
     users, err := repository.GetUsers()
     if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        c.JSON(http.StatusInternalServerError, response.Error(500, "Server internal error", err.Error()))
         return
     }
 

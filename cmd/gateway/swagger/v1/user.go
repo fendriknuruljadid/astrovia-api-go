@@ -16,7 +16,8 @@ type User struct {
 
 // @Summary Get all users
 // @Description Get list of users
-// @Tags users
+// @Tags Users
+// @Security BearerAuth
 // @Security X-Signature
 // @Security X-Timestamp
 // @Produce json
@@ -26,7 +27,8 @@ func GetUsersHandler(c *fiber.Ctx) error { return nil }
 
 // @Summary Get user by ID
 // @Description Get single user
-// @Tags users
+// @Tags Users
+// @Security BearerAuth
 // @Security X-Signature
 // @Security X-Timestamp
 // @Produce json
@@ -37,7 +39,7 @@ func GetUserHandler(c *fiber.Ctx) error { return nil }
 
 // @Summary Create user
 // @Description Create new user
-// @Tags users
+// @Tags Users
 // @Security X-Signature
 // @Security X-Timestamp
 // @Accept json
@@ -49,7 +51,8 @@ func CreateUserHandler(c *fiber.Ctx) error { return nil }
 
 // @Summary Update user
 // @Description Update user by ID
-// @Tags users
+// @Tags Users
+// @Security BearerAuth
 // @Security X-Signature
 // @Security X-Timestamp
 // @Accept json
@@ -62,7 +65,8 @@ func UpdateUserHandler(c *fiber.Ctx) error { return nil }
 
 // @Summary Delete user
 // @Description Delete user by ID
-// @Tags users
+// @Tags Users
+// @Security BearerAuth
 // @Security X-Signature
 // @Security X-Timestamp
 // @Param id path string true "User ID"

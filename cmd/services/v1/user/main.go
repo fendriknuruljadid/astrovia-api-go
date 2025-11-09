@@ -2,9 +2,9 @@ package main
 
 import (
     "github.com/gin-gonic/gin"
-    "astrovia-api-go/internal/packages/db"
-    "astrovia-api-go/internal/middlewares"
-    "astrovia-api-go/cmd/services/v1/user/routes"
+    "app/internal/packages/db"
+    "app/internal/middlewares"
+    "app/cmd/services/v1/user/routes"
 )
 
 func main() {

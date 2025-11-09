@@ -2,7 +2,7 @@ package routesV1
 
 import (
 	"github.com/gin-gonic/gin"
-    "astrovia-api-go/internal/services/v1/user/handlers"	
+    "app/internal/services/v1/user/handlers"	
 )
 
 func RegisterPublicRoutes(r *gin.RouterGroup) {

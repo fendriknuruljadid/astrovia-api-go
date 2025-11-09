@@ -18,9 +18,47 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/generate-token": {
+            "post": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Generate token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Authentication",
+                "parameters": [
+                    {
+                        "description": "Auth info",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.Auth"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/v1/users": {
             "get": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "X-Signature": []
                     },
@@ -33,7 +71,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Get all users",
                 "responses": {
@@ -65,7 +103,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Create user",
                 "parameters": [
@@ -93,6 +131,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "X-Signature": []
                     },
                     {
@@ -104,7 +145,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Get user by ID",
                 "parameters": [
@@ -128,6 +169,9 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "X-Signature": []
                     },
                     {
@@ -142,7 +186,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Update user",
                 "parameters": [
@@ -175,6 +219,9 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "X-Signature": []
                     },
                     {
@@ -183,7 +230,7 @@ const docTemplate = `{
                 ],
                 "description": "Delete user by ID",
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Delete user",
                 "parameters": [
@@ -210,6 +257,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "routes.Auth": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                }
+            }
+        },
         "routes.User": {
             "type": "object",
             "properties": {
@@ -226,6 +287,12 @@ const docTemplate = `{
         }
     },
     "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Format: Bearer \u003ctoken\u003e",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        },
         "X-Signature": {
             "description": "Signature HMAC SHA256 untuk validasi integritas request",
             "type": "apiKey",

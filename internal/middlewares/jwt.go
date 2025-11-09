@@ -10,39 +10,51 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
 
-	"astrovia-api-go/internal/packages/response"
+	"app/internal/packages/response"
+    "app/internal/services/v1/user/models"
 )
 
 func init() {
 	godotenv.Load()
 }
 
-var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
+func getJWTSecret() []byte {
+	secret := os.Getenv("JWT_SECRET")
+	return []byte(secret)
+}
 
 type Claims struct {
+	ID       string `json:"id"`
 	Username string `json:"username"`
+	Email    string `json:"email"`
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(username string) (string, error) {
+// Generate Token
+func GenerateToken(u *models.User) (string, error) {
 	expirationTime := time.Now().Add(2 * time.Hour)
 
 	claims := &Claims{
-		Username: username,
+		ID:       u.ID,
+		Username: u.Name,
+		Email:    u.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			Issuer:    "gin-service",
+			Issuer:    "astrovia-auth-service",
 		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtSecret)
+	return token.SignedString(getJWTSecret())
 }
 
+// JWT AUTH Middleware (fully fixed)
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if len(jwtSecret) == 0 {
+
+		secret := getJWTSecret()
+		if len(secret) == 0 {
 			c.JSON(http.StatusInternalServerError, response.Error(500, "JWT secret not set", nil))
 			c.Abort()
 			return
@@ -66,10 +78,7 @@ func JWTAuth() gin.HandlerFunc {
 		claims := &Claims{}
 
 		token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, jwt.ErrSignatureInvalid
-			}
-			return jwtSecret, nil
+			return secret, nil
 		})
 
 		if err != nil || !token.Valid {
@@ -78,7 +87,9 @@ func JWTAuth() gin.HandlerFunc {
 			return
 		}
 
+		c.Set("user_id", claims.ID)
 		c.Set("username", claims.Username)
+		c.Set("email", claims.Email)
 
 		c.Next()
 	}

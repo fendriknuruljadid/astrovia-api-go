@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"time"
 
-	"astrovia-api-go/internal/packages/response"
+	"app/internal/packages/response"
 	"github.com/gofiber/fiber/v2"
 
 )

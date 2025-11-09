@@ -1,5 +1,14 @@
 basePath: /
 definitions:
+  routes.Auth:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      provider:
+        type: string
+    type: object
   routes.User:
     properties:
       email:
@@ -17,6 +26,27 @@ info:
   title: Astrovia Gateway API
   version: "1.1"
 paths:
+  /v1/generate-token:
+    post:
+      consumes:
+      - application/json
+      description: Generate token
+      parameters:
+      - description: Auth info
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/routes.Auth'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Authentication
+      tags:
+      - Authentication
   /v1/users:
     get:
       description: Get list of users
@@ -30,11 +60,12 @@ paths:
               $ref: '#/definitions/routes.User'
             type: array
       security:
+      - BearerAuth: []
       - X-Signature: []
       - X-Timestamp: []
       summary: Get all users
       tags:
-      - users
+      - Users
     post:
       consumes:
       - application/json
@@ -58,7 +89,7 @@ paths:
       - X-Timestamp: []
       summary: Create user
       tags:
-      - users
+      - Users
   /v1/users/{id}:
     delete:
       description: Delete user by ID
@@ -76,11 +107,12 @@ paths:
               type: boolean
             type: object
       security:
+      - BearerAuth: []
       - X-Signature: []
       - X-Timestamp: []
       summary: Delete user
       tags:
-      - users
+      - Users
     get:
       description: Get single user
       parameters:
@@ -97,11 +129,12 @@ paths:
           schema:
             $ref: '#/definitions/routes.User'
       security:
+      - BearerAuth: []
       - X-Signature: []
       - X-Timestamp: []
       summary: Get user by ID
       tags:
-      - users
+      - Users
     put:
       consumes:
       - application/json
@@ -126,12 +159,18 @@ paths:
           schema:
             $ref: '#/definitions/routes.User'
       security:
+      - BearerAuth: []
       - X-Signature: []
       - X-Timestamp: []
       summary: Update user
       tags:
-      - users
+      - Users
 securityDefinitions:
+  BearerAuth:
+    description: 'Format: Bearer <token>'
+    in: header
+    name: Authorization
+    type: apiKey
   X-Signature:
     description: Signature HMAC SHA256 untuk validasi integritas request
     in: header

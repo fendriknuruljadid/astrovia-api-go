@@ -1,6 +1,6 @@
 package dto
 
-import "astrovia-api-go/internal/services/v1/user/models"
+import "app/internal/services/v1/user/models"
 
 type CreateDTO struct {
     Name     string `json:"name" binding:"required,min=3"`

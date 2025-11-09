@@ -3,8 +3,8 @@ package middlewares
 import (
     "log"
     "github.com/gin-gonic/gin"
-    "astrovia-api-go/internal/packages/errors"
-    "astrovia-api-go/internal/packages/response"
+    "app/internal/packages/errors"
+    "app/internal/packages/response"
 )
 
 func ErrorHandler() gin.HandlerFunc {
