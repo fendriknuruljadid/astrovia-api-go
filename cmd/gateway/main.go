@@ -1,15 +1,15 @@
 package main
 
 import (
+	_ "app/cmd/gateway/docs"
+	_ "app/cmd/gateway/swagger/v1"
+	"app/internal/middlewares"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/proxy"
 	"github.com/gofiber/swagger"
-	_ "app/cmd/gateway/docs"
-	_ "app/cmd/gateway/swagger/v1"
-	"app/internal/middlewares"
 )
-
 
 // =================== Main Fiber App ===================
 
@@ -36,7 +36,6 @@ import (
 // @contact.name API Support
 // @contact.email dev@astrovia.id
 
-
 func main() {
 	app := fiber.New()
 
@@ -51,26 +50,39 @@ func main() {
 
 	apiV1 := app.Group("/v1")
 
+	// videoGrp.Post("/video/process", func(c *fiber.Ctx) error {
+	// 	var data Job
+	// 	if err := c.BodyParser(&data); err != nil {
+	// 		return err
+	// 	}
+
+	// 	jobData, _ := json.Marshal(data)
+	// 	redisClient.LPush(context.Background(), "video_jobs", jobData)
+
+	// 	return c.JSON(fiber.Map{"status": "queued", "job_id": data.JobID})
+	// })
+
 	// Semua route users v1
 	userGrp := apiV1.Group("/users")
 	userGrp.Use(middlewares.SignatureClientMiddleware())
-
-	// Proxy → Service User (Gin)
 	userGrp.All("/*", func(c *fiber.Ctx) error {
 		target := "http://localhost:2001" + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
 
-
 	authGrp := apiV1.Group("/generate-token")
 	authGrp.Use(middlewares.SignatureClientMiddleware())
-
-	// Proxy → Service User (Gin)
 	authGrp.All("/*", func(c *fiber.Ctx) error {
 		target := "http://localhost:2002" + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
 
+	videoGrp := apiV1.Group("/video")
+	videoGrp.Use(middlewares.SignatureClientMiddleware())
+	videoGrp.All("/*", func(c *fiber.Ctx) error {
+		target := "http://localhost:2003" + c.OriginalURL()
+		return proxy.Do(c, target)
+	})
 
 	// Jalankan server gateway
 	app.Listen(":2000")

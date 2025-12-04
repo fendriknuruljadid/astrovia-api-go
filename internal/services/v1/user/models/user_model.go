@@ -18,6 +18,8 @@ type User struct {
     Name      string    `json:"name"`
     Email     string    `json:"email"`
     Password  string    `json:"password"`
+    Username  string    `json:"username"`
+    Provider  string    `json:"provider"`
     CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp" json:"created_at"`
     UpdatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp" json:"updated_at"`
 }

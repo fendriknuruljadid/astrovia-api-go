@@ -4,6 +4,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"strconv"
 	"time"
 )
 
@@ -19,10 +20,11 @@ func VerifySignature(secret, payload, signature string) bool {
 }
 
 func IsTimestampValid(ts string, maxAge time.Duration) bool {
-	timestamp, err := time.ParseDuration(ts + "ms")
+	millis, err := strconv.ParseInt(ts, 10, 64)
 	if err != nil {
 		return false
 	}
+	timestamp := time.UnixMilli(millis)
 	diff := time.Since(timestamp)
-	return diff < maxAge && diff > -maxAge
+	return diff >= 0 && diff <= maxAge
 }

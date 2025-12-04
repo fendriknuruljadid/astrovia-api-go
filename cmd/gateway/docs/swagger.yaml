@@ -18,6 +18,11 @@ definitions:
       password:
         type: string
     type: object
+  routes.Video:
+    properties:
+      url:
+        type: string
+    type: object
 info:
   contact:
     email: dev@astrovia.id
@@ -165,6 +170,124 @@ paths:
       summary: Update user
       tags:
       - Users
+  /v1/video:
+    get:
+      description: Get list of video
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/routes.Video'
+            type: array
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get all video
+      tags:
+      - Videos
+    post:
+      consumes:
+      - application/json
+      description: Create new video
+      parameters:
+      - description: Video info
+        in: body
+        name: video
+        required: true
+        schema:
+          $ref: '#/definitions/routes.Video'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/routes.Video'
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Create video
+      tags:
+      - Videos
+  /v1/video/{id}:
+    delete:
+      description: Delete video by ID
+      parameters:
+      - description: Video ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Delete video
+      tags:
+      - Videos
+    get:
+      description: Get single video
+      parameters:
+      - description: Video ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.Video'
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get video by ID
+      tags:
+      - Videos
+    put:
+      consumes:
+      - application/json
+      description: Update video by ID
+      parameters:
+      - description: Video ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Video info
+        in: body
+        name: video
+        required: true
+        schema:
+          $ref: '#/definitions/routes.Video'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.Video'
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Update video
+      tags:
+      - Videos
 securityDefinitions:
   BearerAuth:
     description: 'Format: Bearer <token>'

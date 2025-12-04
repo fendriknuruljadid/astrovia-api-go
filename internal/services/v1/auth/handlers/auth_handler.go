@@ -13,6 +13,8 @@ import (
 type AuthRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Provider string `json:"provider"`
+	Oauth 	 string `json:"outh"`
 }
 
 func Auth(c *gin.Context) {
@@ -36,7 +38,7 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	// ✅ Buat token
+	// Buat token
 	token, err := middlewares.GenerateToken(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
