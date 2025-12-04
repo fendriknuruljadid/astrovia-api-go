@@ -84,6 +84,14 @@ func main() {
 		return proxy.Do(c, target)
 	})
 
+	youtuberGrp := apiV1.Group("/youtuber")
+	youtuberGrp.Use(middlewares.SignatureClientMiddleware())
+	autoShortCutGrp := youtuberGrp.Group("/auto-short")
+	autoShortCutGrp.All("/*", func(c *fiber.Ctx) error {
+		target := "http://localhost:2005" + c.OriginalURL()
+		return proxy.Do(c, target)
+	})
+
 	// Jalankan server gateway
 	app.Listen(":2000")
 }
