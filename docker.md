@@ -7,6 +7,9 @@ docker swarm join --token SWMTKN-1-3as4i1umcszrj4uz3gn2q5m9swzp8yabrwb6b2eim1x9r
 show node
 docker node ls
 
+create network
+docker network create --driver overlay --attachable astrovia-service-net
+
 update label
 docker node update --label-add name=worker-01 qeuhg4lmyu7zp0hfakrqwiec3
 
