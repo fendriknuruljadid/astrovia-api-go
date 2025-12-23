@@ -1,5 +1,14 @@
 basePath: /
 definitions:
+  routes.Agent:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
   routes.Auth:
     properties:
       email:
@@ -7,6 +16,25 @@ definitions:
       password:
         type: string
       provider:
+        type: string
+    type: object
+  routes.AutoCaption:
+    properties:
+      url:
+        type: string
+    type: object
+  routes.AutoClip:
+    properties:
+      url:
+        type: string
+    type: object
+  routes.Pricing:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
         type: string
     type: object
   routes.User:
@@ -18,9 +46,13 @@ definitions:
       password:
         type: string
     type: object
-  routes.Video:
+  routes.UserAgent:
     properties:
-      url:
+      email:
+        type: string
+      name:
+        type: string
+      password:
         type: string
     type: object
 info:
@@ -31,6 +63,379 @@ info:
   title: Astrovia Gateway API
   version: "1.1"
 paths:
+  /v1/agents:
+    get:
+      description: Get list of agent
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/routes.Agent'
+            type: array
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get all agent
+      tags:
+      - Agents
+    post:
+      consumes:
+      - application/json
+      description: Create new agent
+      parameters:
+      - description: Agent info
+        in: body
+        name: agent
+        required: true
+        schema:
+          $ref: '#/definitions/routes.Agent'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/routes.Agent'
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Create agent
+      tags:
+      - Agents
+  /v1/agents/{id}:
+    delete:
+      description: Delete agent by ID
+      parameters:
+      - description: Agent ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Delete agent
+      tags:
+      - Agents
+    get:
+      description: Get single agent
+      parameters:
+      - description: Agent ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.Agent'
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get agent by ID
+      tags:
+      - Agents
+    put:
+      consumes:
+      - application/json
+      description: Update agent by ID
+      parameters:
+      - description: Agent ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Agent info
+        in: body
+        name: agent
+        required: true
+        schema:
+          $ref: '#/definitions/routes.Agent'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.Agent'
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Update agent
+      tags:
+      - Agents
+  /v1/agents/public:
+    get:
+      description: Get list of agent
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/routes.Agent'
+            type: array
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get all agent
+      tags:
+      - Agents
+  /v1/astro-zenith/auto-caption:
+    get:
+      description: Get list of autocaption
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/routes.AutoCaption'
+            type: array
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get all autocaption
+      tags:
+      - AutoCaption
+    post:
+      consumes:
+      - application/json
+      description: Create new autocaption
+      parameters:
+      - description: AutoCaption info
+        in: body
+        name: autocaption
+        required: true
+        schema:
+          $ref: '#/definitions/routes.AutoCaption'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/routes.AutoCaption'
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Create autocaption
+      tags:
+      - AutoCaption
+  /v1/astro-zenith/auto-caption/{id}:
+    delete:
+      description: Delete autocaption by ID
+      parameters:
+      - description: AutoCaption ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Delete autocaption
+      tags:
+      - AutoCaption
+    get:
+      description: Get single autocaption
+      parameters:
+      - description: AutoCaption ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.AutoCaption'
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get autocaption by ID
+      tags:
+      - AutoCaption
+    put:
+      consumes:
+      - application/json
+      description: Update autocaption by ID
+      parameters:
+      - description: AutoCaption ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: AutoCaption info
+        in: body
+        name: autocaption
+        required: true
+        schema:
+          $ref: '#/definitions/routes.AutoCaption'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.AutoCaption'
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Update autocaption
+      tags:
+      - AutoCaption
+  /v1/astro-zenith/auto-clip:
+    get:
+      description: Get list of autoclip
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/routes.AutoClip'
+            type: array
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get all autoclip
+      tags:
+      - AutoClips
+    post:
+      consumes:
+      - application/json
+      description: Create new autoclip
+      parameters:
+      - description: AutoClip info
+        in: body
+        name: autoclip
+        required: true
+        schema:
+          $ref: '#/definitions/routes.AutoClip'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/routes.AutoClip'
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Create autoclip
+      tags:
+      - AutoClips
+  /v1/astro-zenith/auto-clip/{id}:
+    delete:
+      description: Delete autoclip by ID
+      parameters:
+      - description: AutoClip ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Delete autoclip
+      tags:
+      - AutoClips
+    get:
+      description: Get single autoclip
+      parameters:
+      - description: AutoClip ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.AutoClip'
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get autoclip by ID
+      tags:
+      - AutoClips
+    put:
+      consumes:
+      - application/json
+      description: Update autoclip by ID
+      parameters:
+      - description: AutoClip ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: AutoClip info
+        in: body
+        name: autoclip
+        required: true
+        schema:
+          $ref: '#/definitions/routes.AutoClip'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.AutoClip'
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Update autoclip
+      tags:
+      - AutoClips
   /v1/generate-token:
     post:
       consumes:
@@ -52,6 +457,242 @@ paths:
       summary: Authentication
       tags:
       - Authentication
+  /v1/pricing:
+    get:
+      description: Get list of pricing
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/routes.Pricing'
+            type: array
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get all pricing
+      tags:
+      - Pricing
+    post:
+      consumes:
+      - application/json
+      description: Create new user
+      parameters:
+      - description: Pricing info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/routes.Pricing'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/routes.Pricing'
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Create user
+      tags:
+      - Pricing
+  /v1/pricing/{id}:
+    delete:
+      description: Delete user by ID
+      parameters:
+      - description: Pricing ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Delete user
+      tags:
+      - Pricing
+    get:
+      description: Get single user
+      parameters:
+      - description: Pricing ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.Pricing'
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get user by ID
+      tags:
+      - Pricing
+    put:
+      consumes:
+      - application/json
+      description: Update user by ID
+      parameters:
+      - description: Pricing ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Pricing info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/routes.Pricing'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.Pricing'
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Update user
+      tags:
+      - Pricing
+  /v1/user-agents:
+    get:
+      description: Get list of user agent
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/routes.UserAgent'
+            type: array
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get all user agent
+      tags:
+      - UserAgents
+    post:
+      consumes:
+      - application/json
+      description: Create new user agent
+      parameters:
+      - description: UserAgent info
+        in: body
+        name: useragent
+        required: true
+        schema:
+          $ref: '#/definitions/routes.UserAgent'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/routes.UserAgent'
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Create user agent
+      tags:
+      - UserAgents
+  /v1/user-agents/{id}:
+    delete:
+      description: Delete user agent by ID
+      parameters:
+      - description: UserAgent ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Delete user agent
+      tags:
+      - UserAgents
+    get:
+      description: Get single user agent
+      parameters:
+      - description: UserAgent ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.UserAgent'
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get user agent by ID
+      tags:
+      - UserAgents
+    put:
+      consumes:
+      - application/json
+      description: Update user agent by ID
+      parameters:
+      - description: UserAgent ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UserAgent info
+        in: body
+        name: useragent
+        required: true
+        schema:
+          $ref: '#/definitions/routes.UserAgent'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.UserAgent'
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Update user agent
+      tags:
+      - UserAgents
   /v1/users:
     get:
       description: Get list of users
@@ -170,124 +811,6 @@ paths:
       summary: Update user
       tags:
       - Users
-  /v1/video:
-    get:
-      description: Get list of video
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/routes.Video'
-            type: array
-      security:
-      - BearerAuth: []
-      - X-Signature: []
-      - X-Timestamp: []
-      summary: Get all video
-      tags:
-      - Videos
-    post:
-      consumes:
-      - application/json
-      description: Create new video
-      parameters:
-      - description: Video info
-        in: body
-        name: video
-        required: true
-        schema:
-          $ref: '#/definitions/routes.Video'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/routes.Video'
-      security:
-      - X-Signature: []
-      - X-Timestamp: []
-      summary: Create video
-      tags:
-      - Videos
-  /v1/video/{id}:
-    delete:
-      description: Delete video by ID
-      parameters:
-      - description: Video ID
-        in: path
-        name: id
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: boolean
-            type: object
-      security:
-      - BearerAuth: []
-      - X-Signature: []
-      - X-Timestamp: []
-      summary: Delete video
-      tags:
-      - Videos
-    get:
-      description: Get single video
-      parameters:
-      - description: Video ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/routes.Video'
-      security:
-      - BearerAuth: []
-      - X-Signature: []
-      - X-Timestamp: []
-      summary: Get video by ID
-      tags:
-      - Videos
-    put:
-      consumes:
-      - application/json
-      description: Update video by ID
-      parameters:
-      - description: Video ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Video info
-        in: body
-        name: video
-        required: true
-        schema:
-          $ref: '#/definitions/routes.Video'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/routes.Video'
-      security:
-      - BearerAuth: []
-      - X-Signature: []
-      - X-Timestamp: []
-      summary: Update video
-      tags:
-      - Videos
 securityDefinitions:
   BearerAuth:
     description: 'Format: Bearer <token>'

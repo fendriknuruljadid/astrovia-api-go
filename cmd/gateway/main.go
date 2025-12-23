@@ -50,18 +50,6 @@ func main() {
 
 	apiV1 := app.Group("/v1")
 
-	// videoGrp.Post("/video/process", func(c *fiber.Ctx) error {
-	// 	var data Job
-	// 	if err := c.BodyParser(&data); err != nil {
-	// 		return err
-	// 	}
-
-	// 	jobData, _ := json.Marshal(data)
-	// 	redisClient.LPush(context.Background(), "video_jobs", jobData)
-
-	// 	return c.JSON(fiber.Map{"status": "queued", "job_id": data.JobID})
-	// })
-
 	// Semua route users v1
 	userGrp := apiV1.Group("/users")
 	userGrp.Use(middlewares.SignatureClientMiddleware())
@@ -73,25 +61,45 @@ func main() {
 	authGrp := apiV1.Group("/generate-token")
 	authGrp.Use(middlewares.SignatureClientMiddleware())
 	authGrp.All("/*", func(c *fiber.Ctx) error {
-		target := "http://localhost:2002" + c.OriginalURL()
+		target := "http://localhost:2001" + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
 
-	videoGrp := apiV1.Group("/video")
-	videoGrp.Use(middlewares.SignatureClientMiddleware())
-	videoGrp.All("/*", func(c *fiber.Ctx) error {
-		target := "http://localhost:2003" + c.OriginalURL()
+	astroZenithGrp := apiV1.Group("/astro-zenith")
+	astroZenithGrp.Use(middlewares.SignatureClientMiddleware())
+
+	autoClipGrp := astroZenithGrp.Group("/auto-clip")
+	autoClipGrp.All("/*", func(c *fiber.Ctx) error {
+		target := "http://localhost:2004" + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
 
-	youtuberGrp := apiV1.Group("/youtuber")
-	youtuberGrp.Use(middlewares.SignatureClientMiddleware())
-	autoShortCutGrp := youtuberGrp.Group("/auto-short")
-	autoShortCutGrp.All("/*", func(c *fiber.Ctx) error {
-		target := "http://localhost:2005" + c.OriginalURL()
+	autoCaption := astroZenithGrp.Group("/auto-caption")
+	autoCaption.All("/*", func(c *fiber.Ctx) error {
+		target := "http://localhost:2004" + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
 
+	agents := apiV1.Group("/agents")
+	agents.Use(middlewares.SignatureClientMiddleware())
+	agents.All("/*", func(c *fiber.Ctx) error {
+		target := "http://localhost:2004" + c.OriginalURL()
+		return proxy.Do(c, target)
+	})
+
+	pricing := apiV1.Group("/pricing")
+	pricing.Use(middlewares.SignatureClientMiddleware())
+	pricing.All("/*", func(c *fiber.Ctx) error {
+		target := "http://localhost:2004" + c.OriginalURL()
+		return proxy.Do(c, target)
+	})
+
+	userAgents := apiV1.Group("/user-agents")
+	userAgents.Use(middlewares.SignatureClientMiddleware())
+	userAgents.All("/*", func(c *fiber.Ctx) error {
+		target := "http://localhost:2004" + c.OriginalURL()
+		return proxy.Do(c, target)
+	})
 	// Jalankan server gateway
 	app.Listen(":2000")
 }

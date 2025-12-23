@@ -18,6 +18,646 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/agents": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Get list of agent",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Get all agent",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/routes.Agent"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Create new agent",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Create agent",
+                "parameters": [
+                    {
+                        "description": "Agent info",
+                        "name": "agent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.Agent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/routes.Agent"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/agents/public": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Get list of agent",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Get all agent",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/routes.Agent"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/agents/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Get single agent",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Get agent by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Agent ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.Agent"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Update agent by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Update agent",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Agent ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Agent info",
+                        "name": "agent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.Agent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.Agent"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Delete agent by ID",
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Delete agent",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Agent ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/astro-zenith/auto-caption": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Get list of autocaption",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AutoCaption"
+                ],
+                "summary": "Get all autocaption",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/routes.AutoCaption"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Create new autocaption",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AutoCaption"
+                ],
+                "summary": "Create autocaption",
+                "parameters": [
+                    {
+                        "description": "AutoCaption info",
+                        "name": "autocaption",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.AutoCaption"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/routes.AutoCaption"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/astro-zenith/auto-caption/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Get single autocaption",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AutoCaption"
+                ],
+                "summary": "Get autocaption by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "AutoCaption ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.AutoCaption"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Update autocaption by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AutoCaption"
+                ],
+                "summary": "Update autocaption",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "AutoCaption ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "AutoCaption info",
+                        "name": "autocaption",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.AutoCaption"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.AutoCaption"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Delete autocaption by ID",
+                "tags": [
+                    "AutoCaption"
+                ],
+                "summary": "Delete autocaption",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "AutoCaption ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/astro-zenith/auto-clip": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Get list of autoclip",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AutoClips"
+                ],
+                "summary": "Get all autoclip",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/routes.AutoClip"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Create new autoclip",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AutoClips"
+                ],
+                "summary": "Create autoclip",
+                "parameters": [
+                    {
+                        "description": "AutoClip info",
+                        "name": "autoclip",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.AutoClip"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/routes.AutoClip"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/astro-zenith/auto-clip/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Get single autoclip",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AutoClips"
+                ],
+                "summary": "Get autoclip by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "AutoClip ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.AutoClip"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Update autoclip by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AutoClips"
+                ],
+                "summary": "Update autoclip",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "AutoClip ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "AutoClip info",
+                        "name": "autoclip",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.AutoClip"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.AutoClip"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Delete autoclip by ID",
+                "tags": [
+                    "AutoClips"
+                ],
+                "summary": "Delete autoclip",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "AutoClip ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/generate-token": {
             "post": {
                 "security": [
@@ -51,6 +691,410 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {}
+            }
+        },
+        "/v1/pricing": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Get list of pricing",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pricing"
+                ],
+                "summary": "Get all pricing",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/routes.Pricing"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Create new user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pricing"
+                ],
+                "summary": "Create user",
+                "parameters": [
+                    {
+                        "description": "Pricing info",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.Pricing"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/routes.Pricing"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/pricing/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Get single user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pricing"
+                ],
+                "summary": "Get user by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Pricing ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.Pricing"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Update user by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pricing"
+                ],
+                "summary": "Update user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Pricing ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Pricing info",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.Pricing"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.Pricing"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Delete user by ID",
+                "tags": [
+                    "Pricing"
+                ],
+                "summary": "Delete user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Pricing ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user-agents": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Get list of user agent",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "UserAgents"
+                ],
+                "summary": "Get all user agent",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/routes.UserAgent"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Create new user agent",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "UserAgents"
+                ],
+                "summary": "Create user agent",
+                "parameters": [
+                    {
+                        "description": "UserAgent info",
+                        "name": "useragent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.UserAgent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/routes.UserAgent"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user-agents/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Get single user agent",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "UserAgents"
+                ],
+                "summary": "Get user agent by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UserAgent ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.UserAgent"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Update user agent by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "UserAgents"
+                ],
+                "summary": "Update user agent",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UserAgent ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "UserAgent info",
+                        "name": "useragent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.UserAgent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.UserAgent"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Delete user agent by ID",
+                "tags": [
+                    "UserAgents"
+                ],
+                "summary": "Delete user agent",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UserAgent ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/v1/users": {
@@ -254,211 +1298,23 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/v1/video": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "X-Signature": []
-                    },
-                    {
-                        "X-Timestamp": []
-                    }
-                ],
-                "description": "Get list of video",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Videos"
-                ],
-                "summary": "Get all video",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/routes.Video"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "X-Signature": []
-                    },
-                    {
-                        "X-Timestamp": []
-                    }
-                ],
-                "description": "Create new video",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Videos"
-                ],
-                "summary": "Create video",
-                "parameters": [
-                    {
-                        "description": "Video info",
-                        "name": "video",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/routes.Video"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/routes.Video"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/video/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "X-Signature": []
-                    },
-                    {
-                        "X-Timestamp": []
-                    }
-                ],
-                "description": "Get single video",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Videos"
-                ],
-                "summary": "Get video by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Video ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/routes.Video"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "X-Signature": []
-                    },
-                    {
-                        "X-Timestamp": []
-                    }
-                ],
-                "description": "Update video by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Videos"
-                ],
-                "summary": "Update video",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Video ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Video info",
-                        "name": "video",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/routes.Video"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/routes.Video"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "X-Signature": []
-                    },
-                    {
-                        "X-Timestamp": []
-                    }
-                ],
-                "description": "Delete video by ID",
-                "tags": [
-                    "Videos"
-                ],
-                "summary": "Delete video",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Video ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "boolean"
-                            }
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
+        "routes.Agent": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "routes.Auth": {
             "type": "object",
             "properties": {
@@ -469,6 +1325,36 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "provider": {
+                    "type": "string"
+                }
+            }
+        },
+        "routes.AutoCaption": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "routes.AutoClip": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "routes.Pricing": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }
@@ -487,10 +1373,16 @@ const docTemplate = `{
                 }
             }
         },
-        "routes.Video": {
+        "routes.UserAgent": {
             "type": "object",
             "properties": {
-                "url": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }

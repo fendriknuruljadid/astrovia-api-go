@@ -1,0 +1,21 @@
+# Build stage
+FROM golang:1.25-alpine AS builder
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy only required source
+COPY cmd/services/v1/astro-zenith ./cmd/services/v1/astro-zenith
+COPY internal/services/v1/astro-zenith ./internal/services/v1/astro-zenith
+COPY internal/packages ./internal/packages
+COPY internal/middlewares ./internal/middlewares
+
+RUN go build -o astro-zenith-service ./cmd/services/v1/astro-zenith
+
+# Final stage
+FROM alpine:3.18
+WORKDIR /app
+COPY --from=builder /app/astro-zenith-service .
+EXPOSE 2000
+CMD ["./astro-zenith-service"]

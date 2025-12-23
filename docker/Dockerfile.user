@@ -8,8 +8,9 @@ RUN go mod download
 # Copy only required source
 COPY cmd/services/v1/user ./cmd/services/v1/user
 COPY internal/services/v1/user ./internal/services/v1/user
+COPY internal/services/v1/auth ./internal/services/v1/auth
 COPY internal/packages ./internal/packages
-COPY internal/middlewares ./internal/middlewares  # <--- tambahan
+COPY internal/middlewares ./internal/middlewares
 
 RUN go build -o user-service ./cmd/services/v1/user
 

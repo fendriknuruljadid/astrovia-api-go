@@ -4,6 +4,9 @@ docker swarm init --advertise-addr 212.85.27.3
 join worker
 docker swarm join --token SWMTKN-1-3as4i1umcszrj4uz3gn2q5m9swzp8yabrwb6b2eim1x9rgbirb-ex9lj7bg51t6o9gz7xctd6l4n 212.85.27.3:2377
 
+new
+docker swarm join --token SWMTKN-1-50w3z0ddjszx88m2oh0ppv22feeqqzr04knu7zb7r0592uden2-brtzmxndjp0jqn15mvlflp95s 212.85.27.3:2377
+
 show node
 docker node ls
 
