@@ -7,7 +7,8 @@ RUN go mod download
 
 # Copy only gateway source
 COPY cmd/gateway ./cmd/gateway
-COPY internal ./internal
+COPY internal ./internal/middlewares
+COPY internal ./internal/packages
 
 RUN go build -o gateway ./cmd/gateway
 
