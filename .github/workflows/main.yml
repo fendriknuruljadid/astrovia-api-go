@@ -40,7 +40,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: Dockerfile.${{ github.event.inputs.service }}
+          file: docker/Dockerfile.${{ github.event.inputs.service }}
           push: true
           tags: |
             fendriknj/astrovia-${{ github.event.inputs.service }}:latest
