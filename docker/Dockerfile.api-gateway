@@ -9,6 +9,7 @@ RUN go mod download
 COPY cmd/gateway ./cmd/gateway
 COPY internal/middlewares ./internal/middlewares
 COPY internal/packages ./internal/packages
+COPY internal/services/v1/user ./internal/services/v1/user
 
 RUN go build -o gateway ./cmd/gateway
 
