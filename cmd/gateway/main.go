@@ -5,6 +5,8 @@ import (
 	_ "app/cmd/gateway/swagger/v1"
 	"app/internal/middlewares"
 
+	"os"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/proxy"
@@ -35,6 +37,10 @@ import (
 
 // @contact.name API Support
 // @contact.email dev@astrovia.id
+var (
+	userServiceURL = os.Getenv("USER_SERVICE_URL")
+	astroZenithURL = os.Getenv("ASTRO_ZENITH_URL")
+)
 
 func main() {
 	app := fiber.New()
@@ -54,14 +60,14 @@ func main() {
 	userGrp := apiV1.Group("/users")
 	userGrp.Use(middlewares.SignatureClientMiddleware())
 	userGrp.All("/*", func(c *fiber.Ctx) error {
-		target := "http://localhost:2001" + c.OriginalURL()
+		target := userServiceURL + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
 
 	authGrp := apiV1.Group("/generate-token")
 	authGrp.Use(middlewares.SignatureClientMiddleware())
 	authGrp.All("/*", func(c *fiber.Ctx) error {
-		target := "http://localhost:2001" + c.OriginalURL()
+		target := userServiceURL + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
 
@@ -70,34 +76,34 @@ func main() {
 
 	autoClipGrp := astroZenithGrp.Group("/auto-clip")
 	autoClipGrp.All("/*", func(c *fiber.Ctx) error {
-		target := "http://localhost:2004" + c.OriginalURL()
+		target := astroZenithURL + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
 
 	autoCaption := astroZenithGrp.Group("/auto-caption")
 	autoCaption.All("/*", func(c *fiber.Ctx) error {
-		target := "http://localhost:2004" + c.OriginalURL()
+		target := astroZenithURL + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
 
 	agents := apiV1.Group("/agents")
 	agents.Use(middlewares.SignatureClientMiddleware())
 	agents.All("/*", func(c *fiber.Ctx) error {
-		target := "http://localhost:2004" + c.OriginalURL()
+		target := astroZenithURL + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
 
 	pricing := apiV1.Group("/pricing")
 	pricing.Use(middlewares.SignatureClientMiddleware())
 	pricing.All("/*", func(c *fiber.Ctx) error {
-		target := "http://localhost:2004" + c.OriginalURL()
+		target := astroZenithURL + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
 
 	userAgents := apiV1.Group("/user-agents")
 	userAgents.Use(middlewares.SignatureClientMiddleware())
 	userAgents.All("/*", func(c *fiber.Ctx) error {
-		target := "http://localhost:2004" + c.OriginalURL()
+		target := astroZenithURL + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
 	// Jalankan server gateway
