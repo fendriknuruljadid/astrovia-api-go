@@ -38,8 +38,9 @@ import (
 // @contact.name API Support
 // @contact.email dev@astrovia.id
 var (
-	userServiceURL = os.Getenv("USER_SERVICE_URL")
-	astroZenithURL = os.Getenv("ASTRO_ZENITH_URL")
+	userServiceURL   = os.Getenv("USER_SERVICE_URL")
+	globalServiceURL = os.Getenv("GLOBAL_SERVICE_URL")
+	astroZenithURL   = os.Getenv("ASTRO_ZENITH_URL")
 )
 
 func main() {
@@ -54,9 +55,10 @@ func main() {
 	// Swagger UI
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
+	// Semua route users v1
 	apiV1 := app.Group("/v1")
 
-	// Semua route users v1
+	// Auth & User Service
 	userGrp := apiV1.Group("/users")
 	userGrp.Use(middlewares.SignatureClientMiddleware())
 	userGrp.All("/*", func(c *fiber.Ctx) error {
@@ -71,6 +73,29 @@ func main() {
 		return proxy.Do(c, target)
 	})
 
+	// global service
+	agents := apiV1.Group("/agents")
+	agents.Use(middlewares.SignatureClientMiddleware())
+	agents.All("/*", func(c *fiber.Ctx) error {
+		target := globalServiceURL + c.OriginalURL()
+		return proxy.Do(c, target)
+	})
+
+	pricing := apiV1.Group("/pricing")
+	pricing.Use(middlewares.SignatureClientMiddleware())
+	pricing.All("/*", func(c *fiber.Ctx) error {
+		target := globalServiceURL + c.OriginalURL()
+		return proxy.Do(c, target)
+	})
+
+	userAgents := apiV1.Group("/user-agents")
+	userAgents.Use(middlewares.SignatureClientMiddleware())
+	userAgents.All("/*", func(c *fiber.Ctx) error {
+		target := globalServiceURL + c.OriginalURL()
+		return proxy.Do(c, target)
+	})
+
+	// Astro zenith service
 	astroZenithGrp := apiV1.Group("/astro-zenith")
 	astroZenithGrp.Use(middlewares.SignatureClientMiddleware())
 
@@ -82,27 +107,6 @@ func main() {
 
 	autoCaption := astroZenithGrp.Group("/auto-caption")
 	autoCaption.All("/*", func(c *fiber.Ctx) error {
-		target := astroZenithURL + c.OriginalURL()
-		return proxy.Do(c, target)
-	})
-
-	agents := apiV1.Group("/agents")
-	agents.Use(middlewares.SignatureClientMiddleware())
-	agents.All("/*", func(c *fiber.Ctx) error {
-		target := astroZenithURL + c.OriginalURL()
-		return proxy.Do(c, target)
-	})
-
-	pricing := apiV1.Group("/pricing")
-	pricing.Use(middlewares.SignatureClientMiddleware())
-	pricing.All("/*", func(c *fiber.Ctx) error {
-		target := astroZenithURL + c.OriginalURL()
-		return proxy.Do(c, target)
-	})
-
-	userAgents := apiV1.Group("/user-agents")
-	userAgents.Use(middlewares.SignatureClientMiddleware())
-	userAgents.All("/*", func(c *fiber.Ctx) error {
 		target := astroZenithURL + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
