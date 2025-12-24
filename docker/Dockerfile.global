@@ -1,0 +1,23 @@
+# Build stage
+FROM golang:1.25-alpine AS builder
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy only required source
+COPY cmd/services/v1/global ./cmd/services/v1/global
+COPY internal/packages ./internal/packages
+COPY internal/middlewares ./internal/middlewares
+COPY internal/services/v1/agent ./internal/services/v1/agent
+COPY internal/services/v1/pricing ./internal/services/v1/pricing
+COPY internal/services/v1/user-agent ./internal/services/v1/user-agent
+
+RUN go build -o global-service ./cmd/services/v1/global
+
+# Final stage
+FROM alpine:3.18
+WORKDIR /app
+COPY --from=builder /app/global-service .
+EXPOSE 2000
+CMD ["./global-service"]
