@@ -28,5 +28,5 @@ func main() {
 	protectedV1.Use(middlewares.JWTAuth())
 	routesV1.RegisterProtectedRoutes(protectedV1)
 
-	r.Run(":2004")
+	r.Run(":2002")
 }

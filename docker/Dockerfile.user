@@ -18,5 +18,5 @@ RUN go build -o user-service ./cmd/services/v1/user
 FROM alpine:3.18
 WORKDIR /app
 COPY --from=builder /app/user-service .
-EXPOSE 2000
+EXPOSE 2001
 CMD ["./user-service"]

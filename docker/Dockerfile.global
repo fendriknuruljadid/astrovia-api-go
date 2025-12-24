@@ -19,5 +19,5 @@ RUN go build -o global-service ./cmd/services/v1/global
 FROM alpine:3.18
 WORKDIR /app
 COPY --from=builder /app/global-service .
-EXPOSE 2000
+EXPOSE 2002
 CMD ["./global-service"]
