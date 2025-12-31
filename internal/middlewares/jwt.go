@@ -11,7 +11,10 @@ import (
 	"github.com/joho/godotenv"
 
 	"app/internal/packages/response"
-    "app/internal/services/v1/user/models"
+	"app/internal/packages/utils"
+	auth_models "app/internal/services/v1/auth/models"
+	"app/internal/services/v1/auth/repository"
+	"app/internal/services/v1/user/models"
 )
 
 func init() {
@@ -30,9 +33,16 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
+type AuthTokens struct {
+	AccessToken  string
+	RefreshToken string
+	ExpiresIn    int64
+}
+
 // Generate Token
-func GenerateToken(u *models.User) (string, error) {
+func GenerateToken(u *models.User, deviceId string) (*AuthTokens, error) {
 	expirationTime := time.Now().Add(2 * time.Hour)
+	// expirationTime := time.Now().Add(30 * time.Second)
 
 	claims := &Claims{
 		ID:       u.ID,
@@ -45,8 +55,27 @@ func GenerateToken(u *models.User) (string, error) {
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(getJWTSecret())
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(getJWTSecret())
+	if err != nil {
+		return nil, err
+	}
+	refreshToken := utils.GenerateRefreshToken()
+	ref := auth_models.RefreshTokens{
+		UserID:    u.ID,
+		Token:     refreshToken,
+		DeviceId:  deviceId,
+		ExpiredAt: time.Now().Add(30 * 24 * time.Hour),
+		Revoke:    false,
+	}
+	repository.CreateRefreshTokens(&ref)
+
+	return &AuthTokens{
+		AccessToken:  token,
+		RefreshToken: refreshToken,
+		ExpiresIn:    int64(2 * 60 * 60),
+		// ExpiresIn: int64(30),
+	}, nil
+	// return token.SignedString(getJWTSecret())
 }
 
 // JWT AUTH Middleware (fully fixed)

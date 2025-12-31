@@ -658,7 +658,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/generate-token": {
+        "/v1/auth/generate-token": {
             "post": {
                 "security": [
                     {
@@ -687,6 +687,149 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/routes.Auth"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/v1/auth/logout": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    },
+                    {
+                        "X-DeviceId": []
+                    }
+                ],
+                "description": "Logout APP",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout",
+                "parameters": [
+                    {
+                        "description": "RefreshToken info",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.RefreshToken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/logout-all": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    },
+                    {
+                        "X-DeviceId": []
+                    }
+                ],
+                "description": "Logout All Device",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout All Device",
+                "parameters": [
+                    {
+                        "description": "RefreshToken info",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.RefreshToken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/refresh-token": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    },
+                    {
+                        "X-DeviceId": []
+                    }
+                ],
+                "description": "Refresh token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Refresh Tokens",
+                "parameters": [
+                    {
+                        "description": "RefreshToken info",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.RefreshToken"
                         }
                     }
                 ],
@@ -1359,6 +1502,14 @@ const docTemplate = `{
                 }
             }
         },
+        "routes.RefreshToken": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
         "routes.User": {
             "type": "object",
             "properties": {
@@ -1393,6 +1544,12 @@ const docTemplate = `{
             "description": "Format: Bearer \u003ctoken\u003e",
             "type": "apiKey",
             "name": "Authorization",
+            "in": "header"
+        },
+        "X-DeviceId": {
+            "description": "DeviceId untuk validasi request",
+            "type": "apiKey",
+            "name": "X-DeviceId",
             "in": "header"
         },
         "X-Signature": {

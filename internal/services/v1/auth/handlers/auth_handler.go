@@ -3,8 +3,10 @@ package auth
 import (
 	"app/internal/middlewares"
 	"app/internal/packages/db"
+	auth_models "app/internal/services/v1/auth/models"
 	"app/internal/services/v1/user/models"
 	"net/http"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -19,6 +21,10 @@ type AuthRequest struct {
 	Provider   string `json:"provider"`   // hanya: google
 	OAuthToken string `json:"oauthToken"` // access_token dari Google Sign-In
 	Email      string `json:"email"`      // optional (Google bisa kirim)
+}
+
+type RefreshTokenRequest struct {
+	RefreshToken string `json:"refresh_token"`
 }
 
 // Struktur data Google token validation response
@@ -73,7 +79,8 @@ func Auth(c *gin.Context) {
 	}
 
 	// === Generate JWT ===
-	token, err := middlewares.GenerateToken(&user)
+	deviceId := c.GetHeader("X-DeviceId")
+	token, err := middlewares.GenerateToken(&user, deviceId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return
@@ -91,6 +98,128 @@ func Auth(c *gin.Context) {
 		},
 	}))
 
+}
+
+func RefreshToken(c *gin.Context) {
+	var req RefreshTokenRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, response.Error(400, "invalid request", nil))
+		return
+	}
+
+	deviceId := c.GetHeader("X-DeviceId")
+	if deviceId == "" {
+		c.JSON(401, response.Error(401, "device id required", nil))
+		return
+	}
+
+	tx, _ := db.DB.Begin()
+	defer tx.Rollback()
+
+	var rt auth_models.RefreshTokens
+	err := tx.NewSelect().
+		Model(&rt).
+		Where("token = ?", req.RefreshToken).
+		Where("device_id = ?", deviceId).
+		Where("revoke = false").
+		Scan(c)
+
+	if err != nil || time.Now().After(rt.ExpiredAt) {
+		c.JSON(401, response.Error(401, "invalid refresh token", nil))
+		return
+	}
+
+	var user models.User
+	_ = tx.NewSelect().
+		Model(&user).
+		Where("id = ?", rt.UserID).
+		Scan(c)
+
+	// revoke lama
+	// _, err = tx.NewUpdate().
+	// 	Model(&rt).
+	// 	Set("revoke = true").
+	// 	Where("id = ?", rt.ID).
+	// 	Exec(c)
+	_, err = tx.NewUpdate().
+		Model((*auth_models.RefreshTokens)(nil)).
+		Set("revoke = true").
+		Where("id = ?", rt.ID).
+		Exec(c)
+
+	if err != nil {
+		c.JSON(500, response.Error(500, "failed revoke token", nil))
+		return
+	}
+
+	if err = tx.Commit(); err != nil {
+		c.JSON(500, response.Error(500, "commit failed", nil))
+		return
+	}
+
+	accessToken, err := middlewares.GenerateToken(&user, deviceId)
+	if err != nil {
+		c.JSON(500, response.Error(500, "failed generate token", nil))
+		return
+	}
+
+	c.JSON(200, response.Success(200, "success", gin.H{
+		"access_token": accessToken,
+	}))
+}
+
+func Logout(c *gin.Context) {
+	// user dari JWT middleware
+	user, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(401, response.Error(401, "unauthorized", nil))
+		return
+	}
+
+	// u := user.(*models.User)
+
+	deviceId := c.GetHeader("X-DeviceId")
+	if deviceId == "" {
+		c.JSON(400, response.Error(400, "device id required", nil))
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	// revoke semua refresh token di device ini
+	_, err := db.DB.NewUpdate().
+		Model((*auth_models.RefreshTokens)(nil)).
+		Set("revoke = true").
+		Where("users_id = ?", user).
+		Where("device_id = ?", deviceId).
+		Where("revoke = false").
+		Exec(ctx)
+
+	if err != nil {
+		c.JSON(500, response.Error(500, "failed logout", nil))
+		return
+	}
+
+	c.JSON(200, response.Success(200, "logout success", nil))
+}
+
+func LogoutAll(c *gin.Context) {
+	user := c.MustGet("user_id")
+	ctx := c.Request.Context()
+
+	_, err := db.DB.NewUpdate().
+		Model((*auth_models.RefreshTokens)(nil)).
+		Set("revoke = true").
+		Where("users_id = ?", user).
+		Where("revoke = false").
+		Exec(ctx)
+
+	if err != nil {
+		c.JSON(500, response.Error(500, "failed logout all", nil))
+		return
+	}
+
+	c.JSON(200, response.Success(200, "logout all success", nil))
 }
 
 // Verify Google Access Token

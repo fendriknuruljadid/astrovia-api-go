@@ -37,6 +37,11 @@ definitions:
       password:
         type: string
     type: object
+  routes.RefreshToken:
+    properties:
+      refresh_token:
+        type: string
+    type: object
   routes.User:
     properties:
       email:
@@ -436,7 +441,7 @@ paths:
       summary: Update autoclip
       tags:
       - AutoClips
-  /v1/generate-token:
+  /v1/auth/generate-token:
     post:
       consumes:
       - application/json
@@ -455,6 +460,87 @@ paths:
       - X-Signature: []
       - X-Timestamp: []
       summary: Authentication
+      tags:
+      - Authentication
+  /v1/auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logout APP
+      parameters:
+      - description: RefreshToken info
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/routes.RefreshToken'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      - X-DeviceId: []
+      summary: Logout
+      tags:
+      - Authentication
+  /v1/auth/logout-all:
+    post:
+      consumes:
+      - application/json
+      description: Logout All Device
+      parameters:
+      - description: RefreshToken info
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/routes.RefreshToken'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      - X-DeviceId: []
+      summary: Logout All Device
+      tags:
+      - Authentication
+  /v1/auth/refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: Refresh token
+      parameters:
+      - description: RefreshToken info
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/routes.RefreshToken'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      - X-Signature: []
+      - X-Timestamp: []
+      - X-DeviceId: []
+      summary: Refresh Tokens
       tags:
       - Authentication
   /v1/pricing:
@@ -816,6 +902,11 @@ securityDefinitions:
     description: 'Format: Bearer <token>'
     in: header
     name: Authorization
+    type: apiKey
+  X-DeviceId:
+    description: DeviceId untuk validasi request
+    in: header
+    name: X-DeviceId
     type: apiKey
   X-Signature:
     description: Signature HMAC SHA256 untuk validasi integritas request

@@ -35,6 +35,11 @@ import (
 // @name X-Timestamp
 // @description Timestamp UTC format RFC3339 (contoh: 2025-11-03T09:10:00Z)
 
+// @securityDefinitions.apikey X-DeviceId
+// @in header
+// @name X-DeviceId
+// @description DeviceId untuk validasi request
+
 // @contact.name API Support
 // @contact.email dev@astrovia.id
 var (
@@ -66,7 +71,7 @@ func main() {
 		return proxy.Do(c, target)
 	})
 
-	authGrp := apiV1.Group("/generate-token")
+	authGrp := apiV1.Group("/auth")
 	authGrp.Use(middlewares.SignatureClientMiddleware())
 	authGrp.All("/*", func(c *fiber.Ctx) error {
 		target := userServiceURL + c.OriginalURL()
