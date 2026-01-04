@@ -25,7 +25,11 @@ definitions:
     type: object
   routes.AutoClip:
     properties:
-      url:
+      thumbnail:
+        type: string
+      video_title:
+        type: string
+      video_url:
         type: string
     type: object
   routes.Pricing:
@@ -361,6 +365,7 @@ paths:
           schema:
             $ref: '#/definitions/routes.AutoClip'
       security:
+      - BearerAuth: []
       - X-Signature: []
       - X-Timestamp: []
       summary: Create autoclip

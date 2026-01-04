@@ -11,17 +11,19 @@ import (
 )
 
 type Videos struct {
-	bun.BaseModel `bun:"table:video"`
+	bun.BaseModel `bun:"table:videos"`
 
-	ID             string `bun:"id,pk,notnull" json:"id"`
-	DateUpload     string `bun:"date_upload" json:"date_upload"`
-	VideoURL       string `bun:"video_url" json:"video_url"`
-	VideoName      string `bun:"video_name" json:"video_name"`
-	TranscriptFile string `bun:"transcript_file" json:"transcript_file"`
-	UsersID        string `bun:"users_id" json:"users_id"`
-	UserAgentsID   string `bun:"user_agents_id" json:"user_agents_id"`
-	TokenUsage     int64  `bun:"token_usage" json:"token_usage"`
-	Done           bool   `bun:"done" json:"done"`
+	ID             string    `bun:"id,pk,notnull" json:"id"`
+	DateUpload     time.Time `bun:"date_upload,nullzero,default:current_timestamp" json:"date_upload"`
+	VideoUrl       string    `bun:"video_url" json:"video_url"`
+	VideoName      string    `bun:"video_name" json:"video_name"`
+	VideoTitle     string    `bun:"video_title" json:"video_title"`
+	Thumbnail      string    `bun:"thumbnail" json:"thumbnail"`
+	TranscriptFile string    `bun:"transcript_file" json:"transcript_file"`
+	UsersID        string    `bun:"users_id" json:"users_id"`
+	UserAgentsID   string    `bun:"user_agents_id" json:"user_agents_id"`
+	TokenUsage     int64     `bun:"token_usage" json:"token_usage"`
+	Done           bool      `bun:"done" json:"done"`
 
 	CreatedAt time.Time `bun:"created_at,nullzero,notnull,default:current_timestamp" json:"created_at"`
 	UpdatedAt time.Time `bun:"updated_at,nullzero,notnull,default:current_timestamp" json:"updated_at"`

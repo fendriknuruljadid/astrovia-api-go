@@ -4,6 +4,7 @@ import (
 	routesV1 "app/cmd/services/v1/astro-zenith/routes"
 	"app/internal/middlewares"
 	"app/internal/packages/db"
+	"app/internal/packages/redis"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,8 +12,17 @@ import (
 func main() {
 
 	db.Connect()
+	redis.InitRedis()
+	r := gin.New()
 
-	r := gin.Default()
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
+	r.SetTrustedProxies([]string{
+		"127.0.0.1",  // kalau Fiber & Gin satu host
+		"10.0.0.0/8", // docker / swarm network
+		"172.16.0.0/12",
+		"192.168.0.0/16",
+	})
 
 	// Global middleware
 	r.Use(middlewares.RequestID())

@@ -12,7 +12,17 @@ func main() {
 
 	db.Connect()
 
-	r := gin.Default()
+	// r := gin.Default()
+	r := gin.New()
+
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
+	r.SetTrustedProxies([]string{
+		"127.0.0.1",  // kalau Fiber & Gin satu host
+		"10.0.0.0/8", // docker / swarm network
+		"172.16.0.0/12",
+		"192.168.0.0/16",
+	})
 
 	// Global middleware
 	r.Use(middlewares.RequestID())

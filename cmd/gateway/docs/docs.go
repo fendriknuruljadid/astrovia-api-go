@@ -492,6 +492,9 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "X-Signature": []
                     },
                     {
@@ -1483,7 +1486,13 @@ const docTemplate = `{
         "routes.AutoClip": {
             "type": "object",
             "properties": {
-                "url": {
+                "thumbnail": {
+                    "type": "string"
+                },
+                "video_title": {
+                    "type": "string"
+                },
+                "video_url": {
                     "type": "string"
                 }
             }

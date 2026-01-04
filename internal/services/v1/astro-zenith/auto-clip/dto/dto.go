@@ -6,7 +6,9 @@ import (
 )
 
 type CreateDTO struct {
-	VideoURL string `json:"video_url" binding:"required,url"`
+	VideoUrl   string `json:"video_url" binding:"required,url"`
+	VideoTitle string `json:"video_title" binding:"required"`
+	Thumbnail  string `json:"thumbnail" binding:"required"`
 }
 
 type UpdateDTO struct {
@@ -19,7 +21,9 @@ type UpdateDTO struct {
 type ResponseDTO struct {
 	ID             string `json:"id"`
 	DateUpload     string `json:"date_upload"`
-	VideoURL       string `json:"video_url"`
+	VideoUrl       string `json:"video_url"`
+	VideoTitle     string `json:"video_title"`
+	Thumbnail      string `json:"thumbnail"`
 	VideoName      string `json:"video_name"`
 	TranscriptFile string `json:"transcript_file"`
 	UsersID        string `json:"users_id"`
@@ -33,8 +37,10 @@ type ResponseDTO struct {
 func ToResponseDTO(v *models.Videos) ResponseDTO {
 	return ResponseDTO{
 		ID:             v.ID,
-		DateUpload:     v.DateUpload,
-		VideoURL:       v.VideoURL,
+		DateUpload:     v.DateUpload.Format(time.DateTime),
+		VideoUrl:       v.VideoUrl,
+		VideoTitle:     v.VideoTitle,
+		Thumbnail:      v.Thumbnail,
 		VideoName:      v.VideoName,
 		TranscriptFile: v.TranscriptFile,
 		UsersID:        v.UsersID,

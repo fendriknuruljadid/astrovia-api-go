@@ -5,7 +5,9 @@ import "github.com/gofiber/fiber/v2"
 // =================== Dummy AutoClip model untuk Swagger ===================
 
 type AutoClip struct {
-	Url string `json:"url"`
+	VideoUrl   string `json:"video_url"`
+	VideoTitle string `json:"video_title"`
+	Thumbnail  string `json:"thumbnail"`
 }
 
 // =================== Dummy Handlers untuk Swagger ===================
@@ -36,6 +38,7 @@ func GetAutoClipHandler(c *fiber.Ctx) error { return nil }
 // @Summary Create autoclip
 // @Description Create new autoclip
 // @Tags AutoClips
+// @Security BearerAuth
 // @Security X-Signature
 // @Security X-Timestamp
 // @Accept json
