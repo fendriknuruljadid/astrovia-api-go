@@ -10,6 +10,7 @@ COPY cmd/services/v1/global ./cmd/services/v1/global
 COPY internal/packages ./internal/packages
 COPY internal/middlewares ./internal/middlewares
 COPY internal/services/v1/user ./internal/services/v1/user
+COPY internal/services/v1/auth ./internal/services/v1/auth
 COPY internal/services/v1/agent ./internal/services/v1/agent
 COPY internal/services/v1/pricing ./internal/services/v1/pricing
 COPY internal/services/v1/user-agent ./internal/services/v1/user-agent
