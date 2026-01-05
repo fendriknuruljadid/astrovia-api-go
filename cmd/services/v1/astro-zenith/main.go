@@ -6,6 +6,9 @@ import (
 	"app/internal/packages/db"
 	"app/internal/packages/redis"
 
+	"app/internal/services/v1/astro-zenith/progress"
+	"app/internal/services/v1/astro-zenith/websocket/handlers"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,6 +16,7 @@ func main() {
 
 	db.Connect()
 	redis.InitRedis()
+	go progress.StartConsumer()
 	r := gin.New()
 
 	r.Use(gin.Logger())
@@ -27,6 +31,7 @@ func main() {
 	// Global middleware
 	r.Use(middlewares.RequestID())
 	r.Use(middlewares.ErrorHandler())
+	r.GET("/ws/progress", handlers.ProgressWS)
 
 	// ================================================
 	// PUBLIC group (no JWT)

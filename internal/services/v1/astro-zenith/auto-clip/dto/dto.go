@@ -19,22 +19,47 @@ type UpdateDTO struct {
 }
 
 type ResponseDTO struct {
-	ID             string `json:"id"`
-	DateUpload     string `json:"date_upload"`
-	VideoUrl       string `json:"video_url"`
-	VideoTitle     string `json:"video_title"`
-	Thumbnail      string `json:"thumbnail"`
-	VideoName      string `json:"video_name"`
-	TranscriptFile string `json:"transcript_file"`
-	UsersID        string `json:"users_id"`
-	UserAgentsID   string `json:"user_agents_id"`
-	TokenUsage     int64  `json:"token_usage"`
-	Done           bool   `json:"done"`
-	CreatedAt      string `json:"created_at"`
-	UpdatedAt      string `json:"updated_at"`
+	ID             string            `json:"id"`
+	DateUpload     string            `json:"date_upload"`
+	VideoUrl       string            `json:"video_url"`
+	VideoTitle     string            `json:"video_title"`
+	Thumbnail      string            `json:"thumbnail"`
+	VideoName      string            `json:"video_name"`
+	TranscriptFile string            `json:"transcript_file"`
+	UsersID        string            `json:"users_id"`
+	UserAgentsID   string            `json:"user_agents_id"`
+	TokenUsage     int64             `json:"token_usage"`
+	Done           bool              `json:"done"`
+	CreatedAt      string            `json:"created_at"`
+	UpdatedAt      string            `json:"updated_at"`
+	Clips          []ClipResponseDTO `json:"clips"` // <-- tambahkan ini
+}
+
+type ClipResponseDTO struct {
+	ID         string  `json:"id"`
+	ClipsURL   string  `json:"clips_url"`
+	Title      string  `json:"title"`
+	Reason     string  `json:"reason"`
+	HookText   string  `json:"hook_text"`
+	ViralScore float64 `json:"viral_score"`
+	Duration   float64 `json:"duration"`
+	Status     string  `json:"status"`
 }
 
 func ToResponseDTO(v *models.Videos) ResponseDTO {
+	clips := make([]ClipResponseDTO, len(v.Clips))
+	for i, c := range v.Clips {
+		clips[i] = ClipResponseDTO{
+			ID:         c.ID,
+			ClipsURL:   c.ClipsURL,
+			Title:      c.Title,
+			Reason:     c.Reason,
+			HookText:   c.HookText,
+			ViralScore: c.ViralScore,
+			Duration:   c.Duration,
+			Status:     c.Status,
+		}
+	}
 	return ResponseDTO{
 		ID:             v.ID,
 		DateUpload:     v.DateUpload.Format(time.DateTime),
@@ -49,6 +74,7 @@ func ToResponseDTO(v *models.Videos) ResponseDTO {
 		Done:           v.Done,
 		CreatedAt:      v.CreatedAt.Format(time.DateTime),
 		UpdatedAt:      v.UpdatedAt.Format(time.DateTime),
+		Clips:          clips,
 	}
 }
 

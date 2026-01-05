@@ -5,6 +5,8 @@ import (
 	"app/internal/services/v1/astro-zenith/auto-clip/models"
 	"context"
 	"fmt"
+
+	"github.com/uptrace/bun"
 )
 
 func CreateVideos(video *models.Videos) error {
@@ -16,10 +18,46 @@ func CreateVideos(video *models.Videos) error {
 	return err
 }
 
+// func GetVideos() ([]models.Videos, error) {
+// 	ctx := context.Background()
+// 	var videos []models.Videos
+// 	err := db.DB.NewSelect().Model(&videos).Scan(ctx)
+// 	if err != nil {
+// 		fmt.Println("Get Videos failed:", err)
+// 	}
+// 	return videos, err
+// }
+
+// func GetVideosByID(id string) (*models.Videos, error) {
+// 	ctx := context.Background()
+
+// 	videos := new(models.Videos)
+
+// 	err := db.DB.NewSelect().
+// 		Model(videos).
+// 		Relation("Clips").
+// 		Where("videos.id = ?", id).
+// 		Scan(ctx)
+
+// 	fmt.Println("Clips count:", len(videos.Clips))
+
+// 	if err != nil {
+// 		fmt.Println("GetVideoByID failed:", err)
+// 		return nil, err
+// 	}
+
+// 	return videos, nil
+// }
+
 func GetVideos() ([]models.Videos, error) {
 	ctx := context.Background()
 	var videos []models.Videos
-	err := db.DB.NewSelect().Model(&videos).Scan(ctx)
+
+	// Order by videos.id desc
+	err := db.DB.NewSelect().
+		Model(&videos).
+		OrderExpr("videos.id DESC").
+		Scan(ctx)
 	if err != nil {
 		fmt.Println("Get Videos failed:", err)
 	}
@@ -28,12 +66,25 @@ func GetVideos() ([]models.Videos, error) {
 
 func GetVideosByID(id string) (*models.Videos, error) {
 	ctx := context.Background()
-	video := new(models.Videos)
-	err := db.DB.NewSelect().Model(video).Where("id = ?", id).Scan(ctx)
+	videos := new(models.Videos)
+
+	// Order clips by viral_score desc
+	err := db.DB.NewSelect().
+		Model(videos).
+		Relation("Clips", func(q *bun.SelectQuery) *bun.SelectQuery {
+			return q.OrderExpr("viral_score DESC")
+		}).
+		Where("videos.id = ?", id).
+		Scan(ctx)
+
+	fmt.Println("Clips count:", len(videos.Clips))
+
 	if err != nil {
-		fmt.Println("Get Videos By ID failed:", err)
+		fmt.Println("GetVideoByID failed:", err)
+		return nil, err
 	}
-	return video, err
+
+	return videos, nil
 }
 
 func UpdateVideos(video *models.Videos) error {

@@ -115,6 +115,14 @@ func main() {
 		target := astroZenithURL + c.OriginalURL()
 		return proxy.Do(c, target)
 	})
+
+	wsGrp := app.Group("/ws")
+
+	wsGrp.All("/*", func(c *fiber.Ctx) error {
+		target := astroZenithURL + c.OriginalURL()
+		return proxy.Do(c, target)
+	})
+
 	// Jalankan server gateway
 	app.Listen(":2000")
 }

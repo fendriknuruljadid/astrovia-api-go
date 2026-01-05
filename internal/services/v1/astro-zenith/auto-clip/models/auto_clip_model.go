@@ -10,6 +10,22 @@ import (
 	"github.com/uptrace/bun"
 )
 
+type Clip struct {
+	bun.BaseModel `bun:"table:clips"`
+
+	ID         string                 `bun:",pk"`
+	ClipsURL   string                 `bun:"clips_url"`
+	MetaData   map[string]interface{} `bun:"meta_data,type:json"`
+	Title      string
+	ViralScore float64 `bun:"viral_score"`
+	Reason     string
+	Duration   float64
+	HookText   string `bun:"hook_text"`
+	Status     string
+	VideosID   string    `bun:"videos_id"`
+	CreatedAt  time.Time `bun:"created_at"`
+}
+
 type Videos struct {
 	bun.BaseModel `bun:"table:videos"`
 
@@ -24,9 +40,9 @@ type Videos struct {
 	UserAgentsID   string    `bun:"user_agents_id" json:"user_agents_id"`
 	TokenUsage     int64     `bun:"token_usage" json:"token_usage"`
 	Done           bool      `bun:"done" json:"done"`
-
-	CreatedAt time.Time `bun:"created_at,nullzero,notnull,default:current_timestamp" json:"created_at"`
-	UpdatedAt time.Time `bun:"updated_at,nullzero,notnull,default:current_timestamp" json:"updated_at"`
+	Clips          []*Clip   `bun:"rel:has-many,join:id=videos_id"`
+	CreatedAt      time.Time `bun:"created_at,nullzero,notnull,default:current_timestamp" json:"created_at"`
+	UpdatedAt      time.Time `bun:"updated_at,nullzero,notnull,default:current_timestamp" json:"updated_at"`
 }
 
 // Generate ID dan hash password otomatis sebelum insert
