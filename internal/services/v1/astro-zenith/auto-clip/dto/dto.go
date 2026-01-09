@@ -5,10 +5,19 @@ import (
 	"time"
 )
 
+type CaptionPresetDTO struct {
+	PresetName string `json:"preset_name" binding:"required"`
+	Position   string `json:"position" binding:"required"`
+}
+
 type CreateDTO struct {
-	VideoUrl   string `json:"video_url" binding:"required,url"`
-	VideoTitle string `json:"video_title" binding:"required"`
-	Thumbnail  string `json:"thumbnail" binding:"required"`
+	VideoUrl      string           `json:"video_url" binding:"required,url"`
+	VideoTitle    string           `json:"video_title" binding:"required"`
+	Thumbnail     string           `json:"thumbnail" binding:"required"`
+	ResizeMode    string           `json:"resize_mode" binding:"required"`
+	AspectRatio   string           `json:"aspect_ratio" binding:"required"`
+	CaptionPreset CaptionPresetDTO `json:"caption_preset" binding:"required"`
+	OutputType    string           `json:"output_type" binding:"required"`
 }
 
 type UpdateDTO struct {

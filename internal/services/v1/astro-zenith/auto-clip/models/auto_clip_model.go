@@ -1,11 +1,11 @@
 package models
 
 import (
+	"app/internal/packages/utils"
 	"context"
+	"encoding/json"
 	"strings"
 	"time"
-
-	"app/internal/packages/utils"
 
 	"github.com/uptrace/bun"
 )
@@ -41,6 +41,10 @@ type Videos struct {
 	TokenUsage     int64     `bun:"token_usage" json:"token_usage"`
 	Done           bool      `bun:"done" json:"done"`
 	Clips          []*Clip   `bun:"rel:has-many,join:id=videos_id"`
+	AspectRatio    string    `bun:"aspect_ratio" json:"aspect_ratio"`
+	ResizeMode     string    `bun:"resize_mode" json:"resize_mode"`
+	OutputType     string    `bun:"output_type" json:"output_type"`
+	CaptionPreset json.RawMessage `bun:"caption_preset,type:jsonb" json:"caption_preset"`
 	CreatedAt      time.Time `bun:"created_at,nullzero,notnull,default:current_timestamp" json:"created_at"`
 	UpdatedAt      time.Time `bun:"updated_at,nullzero,notnull,default:current_timestamp" json:"updated_at"`
 }

@@ -170,13 +170,19 @@ func RefreshToken(c *gin.Context) {
 
 func Logout(c *gin.Context) {
 	// user dari JWT middleware
-	user, exists := c.Get("user_id")
-	if !exists {
-		c.JSON(401, response.Error(401, "unauthorized", nil))
-		return
-	}
+	// user, exists := c.Get("user_id")
+	// if !exists {
+	// 	c.JSON(401, response.Error(401, "unauthorized", nil))
+	// 	return
+	// }
 
 	// u := user.(*models.User)
+
+	var req RefreshTokenRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, response.Error(400, "invalid request", nil))
+		return
+	}
 
 	deviceId := c.GetHeader("X-DeviceId")
 	if deviceId == "" {
@@ -190,7 +196,8 @@ func Logout(c *gin.Context) {
 	_, err := db.DB.NewUpdate().
 		Model((*auth_models.RefreshTokens)(nil)).
 		Set("revoke = true").
-		Where("users_id = ?", user).
+		Where("token = ?", req.RefreshToken).
+		// Where("users_id = ?", user).
 		Where("device_id = ?", deviceId).
 		Where("revoke = false").
 		Exec(ctx)

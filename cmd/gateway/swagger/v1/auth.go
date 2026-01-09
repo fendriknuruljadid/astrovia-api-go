@@ -29,7 +29,6 @@ func AuthHandler(c *fiber.Ctx) error { return nil }
 // @Summary Refresh Tokens
 // @Description Refresh token
 // @Tags Authentication
-// @Security BearerAuth
 // @Security X-Signature
 // @Security X-Timestamp
 // @Security X-DeviceId
@@ -42,7 +41,6 @@ func RefreshTokenHandler(c *fiber.Ctx) error { return nil }
 // @Summary Logout
 // @Description Logout APP
 // @Tags Authentication
-// @Security BearerAuth
 // @Security X-Signature
 // @Security X-Timestamp
 // @Security X-DeviceId
@@ -56,7 +54,6 @@ func LogoutHandler(c *fiber.Ctx) error { return nil }
 // @Summary Logout All Device
 // @Description Logout All Device
 // @Tags Authentication
-// @Security BearerAuth
 // @Security X-Signature
 // @Security X-Timestamp
 // @Security X-DeviceId

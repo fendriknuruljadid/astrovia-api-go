@@ -11,6 +11,7 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 	r.POST("/users", handlers.CreateUser)
 	r.POST("/auth/generate-token", auth.Auth)
 	r.POST("/auth/refresh-token", auth.RefreshToken)
+	r.POST("/auth/logout", auth.Logout)
 }
 
 func RegisterProtectedRoutes(r *gin.RouterGroup) {
@@ -18,6 +19,5 @@ func RegisterProtectedRoutes(r *gin.RouterGroup) {
 	r.GET("/users/:id", handlers.GetUserByID)
 	r.PUT("/users/:id", handlers.UpdateUser)
 	r.DELETE("/users/:id", handlers.DeleteUser)
-	r.POST("/auth/logout", auth.Logout)
 	r.POST("/auth/logout-all", auth.LogoutAll)
 }

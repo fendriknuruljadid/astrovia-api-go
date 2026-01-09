@@ -38,13 +38,21 @@ func CreateVideos(c *gin.Context) {
 		c.JSON(500, response.Error(500, "invalid user id type", nil))
 		return
 	}
-
+	presetJSON, err := json.Marshal(req.CaptionPreset)
+	if err != nil {
+		c.JSON(400, response.Error(400, "invalid caption preset", err.Error()))
+		return
+	}
 	videos := models.Videos{
-		VideoUrl:     req.VideoUrl,
-		Thumbnail:    req.Thumbnail,
-		VideoTitle:   req.VideoTitle,
-		UsersID:      uid,
-		UserAgentsID: "usr-agn-01kd52hz2wpw5vsm306m2dj674",
+		VideoUrl:      req.VideoUrl,
+		Thumbnail:     req.Thumbnail,
+		VideoTitle:    req.VideoTitle,
+		UsersID:       uid,
+		UserAgentsID:  "usr-agn-01kd52hz2wpw5vsm306m2dj674",
+		AspectRatio:   req.AspectRatio,
+		ResizeMode:    req.ResizeMode,
+		OutputType:    req.OutputType,
+		CaptionPreset: presetJSON,
 	}
 
 	if err := repository.CreateVideos(&videos); err != nil {
