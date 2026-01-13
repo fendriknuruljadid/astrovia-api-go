@@ -10,14 +10,23 @@ type CaptionPresetDTO struct {
 	Position   string `json:"position" binding:"required"`
 }
 
+type DurationPresetDTO struct {
+	Value string `json:"value" binding:"required"`
+	Label string `json:"label" binding:"required"`
+	Hint  string `json:"hint" binding:"required"`
+	Min   int    `json:"min" binding:"required"`
+	Max   int    `json:"max" binding:"required"`
+}
+
 type CreateDTO struct {
-	VideoUrl      string           `json:"video_url" binding:"required,url"`
-	VideoTitle    string           `json:"video_title" binding:"required"`
-	Thumbnail     string           `json:"thumbnail" binding:"required"`
-	ResizeMode    string           `json:"resize_mode" binding:"required"`
-	AspectRatio   string           `json:"aspect_ratio" binding:"required"`
-	CaptionPreset CaptionPresetDTO `json:"caption_preset" binding:"required"`
-	OutputType    string           `json:"output_type" binding:"required"`
+	VideoUrl       string            `json:"video_url" binding:"required,url"`
+	VideoTitle     string            `json:"video_title" binding:"required"`
+	Thumbnail      string            `json:"thumbnail" binding:"required"`
+	ResizeMode     string            `json:"resize_mode" binding:"required"`
+	AspectRatio    string            `json:"aspect_ratio" binding:"required"`
+	CaptionPreset  CaptionPresetDTO  `json:"caption_preset" binding:"required"`
+	DurationPreset DurationPresetDTO `json:"duration_preset" binding:"required"`
+	OutputType     string            `json:"output_type" binding:"required"`
 }
 
 type UpdateDTO struct {

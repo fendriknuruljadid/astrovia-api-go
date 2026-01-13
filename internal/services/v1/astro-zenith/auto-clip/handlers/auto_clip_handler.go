@@ -43,16 +43,23 @@ func CreateVideos(c *gin.Context) {
 		c.JSON(400, response.Error(400, "invalid caption preset", err.Error()))
 		return
 	}
+
+	durationPresetJSON, err := json.Marshal(req.DurationPreset)
+	if err != nil {
+		c.JSON(400, response.Error(400, "invalid duration preset", err.Error()))
+		return
+	}
 	videos := models.Videos{
-		VideoUrl:      req.VideoUrl,
-		Thumbnail:     req.Thumbnail,
-		VideoTitle:    req.VideoTitle,
-		UsersID:       uid,
-		UserAgentsID:  "usr-agn-01kd52hz2wpw5vsm306m2dj674",
-		AspectRatio:   req.AspectRatio,
-		ResizeMode:    req.ResizeMode,
-		OutputType:    req.OutputType,
-		CaptionPreset: presetJSON,
+		VideoUrl:       req.VideoUrl,
+		Thumbnail:      req.Thumbnail,
+		VideoTitle:     req.VideoTitle,
+		UsersID:        uid,
+		UserAgentsID:   "usr-agn-01kd52hz2wpw5vsm306m2dj674",
+		AspectRatio:    req.AspectRatio,
+		ResizeMode:     req.ResizeMode,
+		OutputType:     req.OutputType,
+		CaptionPreset:  presetJSON,
+		DurationPreset: durationPresetJSON,
 	}
 
 	if err := repository.CreateVideos(&videos); err != nil {
