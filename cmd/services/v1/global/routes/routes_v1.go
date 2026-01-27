@@ -2,6 +2,7 @@ package routesV1
 
 import (
 	agent "app/internal/services/v1/agent/handlers"
+	payment "app/internal/services/v1/payment/handlers"
 	pricing "app/internal/services/v1/pricing/handlers"
 	userAgent "app/internal/services/v1/user-agent/handlers"
 
@@ -10,7 +11,9 @@ import (
 
 func RegisterPublicRoutes(r *gin.RouterGroup) {
 	r.GET("/agents/public", agent.GetAgentsPublic)
+	r.GET("/agents/public/:id", agent.GetAgentPublicByID)
 	r.GET("/user-agents/public", userAgent.GetUserAgents)
+	r.GET("/payment/payment-method", payment.GetPaymentMethod)
 }
 
 func RegisterProtectedRoutes(r *gin.RouterGroup) {

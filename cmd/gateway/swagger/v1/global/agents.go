@@ -26,7 +26,6 @@ func GetAgentsHandler(c *fiber.Ctx) error { return nil }
 // @Summary Get all agent
 // @Description Get list of agent
 // @Tags Agents
-// @Security BearerAuth
 // @Security X-Signature
 // @Security X-Timestamp
 // @Produce json
@@ -45,6 +44,17 @@ func GetAgentsPublicHandler(c *fiber.Ctx) error { return nil }
 // @Success 200 {object} routes.Agent
 // @Router /v1/agents/{id} [get]
 func GetAgentHandler(c *fiber.Ctx) error { return nil }
+
+// @Summary Get agent public by ID
+// @Description Get single agent
+// @Tags Agents
+// @Security X-Signature
+// @Security X-Timestamp
+// @Produce json
+// @Param id path string true "Agent ID"
+// @Success 200 {object} routes.Agent
+// @Router /v1/agents/public/{id} [get]
+func GetAgentPublicHandler(c *fiber.Ctx) error { return nil }
 
 // @Summary Create agent
 // @Description Create new agent

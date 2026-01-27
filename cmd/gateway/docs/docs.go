@@ -96,9 +96,6 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth": []
-                    },
-                    {
                         "X-Signature": []
                     },
                     {
@@ -121,6 +118,43 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/routes.Agent"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/agents/public/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Get single agent",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Get agent public by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Agent ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.Agent"
                         }
                     }
                 }
@@ -700,9 +734,6 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth": []
-                    },
-                    {
                         "X-Signature": []
                     },
                     {
@@ -750,9 +781,6 @@ const docTemplate = `{
         "/v1/auth/logout-all": {
             "post": {
                 "security": [
-                    {
-                        "BearerAuth": []
-                    },
                     {
                         "X-Signature": []
                     },
@@ -802,9 +830,6 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth": []
-                    },
-                    {
                         "X-Signature": []
                     },
                     {
@@ -837,6 +862,37 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {}
+            }
+        },
+        "/v1/payment/payment-method": {
+            "get": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Get list of payment method",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Get all payment method",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/routes.Payment"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/v1/pricing": {
@@ -1493,6 +1549,23 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "video_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "routes.Payment": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "datetime": {
+                    "type": "string"
+                },
+                "merchantcode": {
+                    "type": "string"
+                },
+                "signature": {
                     "type": "string"
                 }
             }

@@ -16,20 +16,51 @@ func CreateAgent(agent *models.Agent) error {
 	return err
 }
 
+// func GetAgents() ([]models.Agent, error) {
+// 	ctx := context.Background()
+// 	var agents []models.Agent
+// 	err := db.DB.NewSelect().Model(&agents).Scan(ctx)
+// 	if err != nil {
+// 		fmt.Println("GetAgents failed:", err)
+// 	}
+// 	return agents, err
+// }
+
 func GetAgents() ([]models.Agent, error) {
 	ctx := context.Background()
+
 	var agents []models.Agent
-	err := db.DB.NewSelect().Model(&agents).Scan(ctx)
+	err := db.DB.NewSelect().
+		Model(&agents).
+		Relation("Pricings").
+		Scan(ctx)
+
 	if err != nil {
 		fmt.Println("GetAgents failed:", err)
 	}
 	return agents, err
 }
 
+// func GetAgentByID(id string) (*models.Agent, error) {
+// 	ctx := context.Background()
+// 	agent := new(models.Agent)
+// 	err := db.DB.NewSelect().Model(agent).Where("id = ?", id).Scan(ctx)
+// 	if err != nil {
+// 		fmt.Println("GetAgentByID failed:", err)
+// 	}
+// 	return agent, err
+// }
+
 func GetAgentByID(id string) (*models.Agent, error) {
 	ctx := context.Background()
 	agent := new(models.Agent)
-	err := db.DB.NewSelect().Model(agent).Where("id = ?", id).Scan(ctx)
+
+	err := db.DB.NewSelect().
+		Model(agent).
+		Where("id = ?", id).
+		Relation("Pricings").
+		Scan(ctx)
+
 	if err != nil {
 		fmt.Println("GetAgentByID failed:", err)
 	}

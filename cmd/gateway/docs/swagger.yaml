@@ -32,6 +32,17 @@ definitions:
       video_url:
         type: string
     type: object
+  routes.Payment:
+    properties:
+      amount:
+        type: integer
+      datetime:
+        type: string
+      merchantcode:
+        type: string
+      signature:
+        type: string
+    type: object
   routes.Pricing:
     properties:
       email:
@@ -203,10 +214,31 @@ paths:
               $ref: '#/definitions/routes.Agent'
             type: array
       security:
-      - BearerAuth: []
       - X-Signature: []
       - X-Timestamp: []
       summary: Get all agent
+      tags:
+      - Agents
+  /v1/agents/public/{id}:
+    get:
+      description: Get single agent
+      parameters:
+      - description: Agent ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.Agent'
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get agent public by ID
       tags:
       - Agents
   /v1/astro-zenith/auto-caption:
@@ -489,7 +521,6 @@ paths:
               type: boolean
             type: object
       security:
-      - BearerAuth: []
       - X-Signature: []
       - X-Timestamp: []
       - X-DeviceId: []
@@ -518,7 +549,6 @@ paths:
               type: boolean
             type: object
       security:
-      - BearerAuth: []
       - X-Signature: []
       - X-Timestamp: []
       - X-DeviceId: []
@@ -541,13 +571,30 @@ paths:
       - application/json
       responses: {}
       security:
-      - BearerAuth: []
       - X-Signature: []
       - X-Timestamp: []
       - X-DeviceId: []
       summary: Refresh Tokens
       tags:
       - Authentication
+  /v1/payment/payment-method:
+    get:
+      description: Get list of payment method
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/routes.Payment'
+            type: array
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Get all payment method
+      tags:
+      - Payments
   /v1/pricing:
     get:
       description: Get list of pricing

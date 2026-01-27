@@ -88,6 +88,17 @@ func GetAgentsPublic(c *gin.Context) {
 	c.JSON(200, response.Success(200, "success", res))
 }
 
+func GetAgentPublicByID(c *gin.Context) {
+	id := c.Param("id")
+	agent, err := repository.GetAgentByID(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Agent not found"})
+		return
+	}
+	res := dto.ToResponseDTO(agent)
+	c.JSON(200, response.Success(200, "success", res))
+}
+
 func GetAgentByID(c *gin.Context) {
 	id := c.Param("id")
 	agent, err := repository.GetAgentByID(id)

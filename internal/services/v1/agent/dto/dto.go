@@ -5,6 +5,17 @@ import (
 	"time"
 )
 
+type PricingResponseDTO struct {
+	ID           string  `json:"id"`
+	Name         string  `json:"name"`
+	Description  string  `json:"description"`
+	Feature      string  `json:"feature"`
+	Duration     int     `json:"duration"`
+	MonthlyPrice float64 `json:"monthly_price"`
+	YearlyPrice  float64 `json:"yearly_price"`
+	TokenMonthly int     `json:"token_monthly"`
+}
+
 type CreateDTO struct {
 	Name        string `json:"name" binding:"required,min=3"`
 	Description string `json:"description" binding:"omitempty"`
@@ -20,23 +31,51 @@ type UpdateDTO struct {
 }
 
 type ResponseDTO struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Logo        string `json:"logo"`
-	URL         string `json:"url"`
-	HasAccess   bool   `json:"has_access"`
-	CreatedAt   string `json:"created_at"`
-	UpdatedAt   string `json:"updated_at"`
+	ID          string               `json:"id"`
+	Name        string               `json:"name"`
+	Description string               `json:"description"`
+	Logo        string               `json:"logo"`
+	URL         string               `json:"url"`
+	HasAccess   bool                 `json:"has_access"`
+	Pricings    []PricingResponseDTO `json:"pricings"`
+	CreatedAt   string               `json:"created_at"`
+	UpdatedAt   string               `json:"updated_at"`
 }
 
+// func ToResponseDTO(a *models.Agent) ResponseDTO {
+// 	return ResponseDTO{
+// 		ID:          a.ID,
+// 		Name:        a.Name,
+// 		Description: a.Description,
+// 		Logo:        a.Logo,
+// 		URL:         a.URL,
+// 		CreatedAt:   a.CreatedAt.Format("2006-01-02 15:04:05"),
+// 		UpdatedAt:   a.UpdatedAt.Format("2006-01-02 15:04:05"),
+// 	}
+// }
+
 func ToResponseDTO(a *models.Agent) ResponseDTO {
+	pricings := make([]PricingResponseDTO, len(a.Pricings))
+	for i, p := range a.Pricings {
+		pricings[i] = PricingResponseDTO{
+			ID:           p.ID,
+			Name:         p.Name,
+			Description:  p.Description,
+			Feature:      p.Feature,
+			Duration:     p.Duration,
+			MonthlyPrice: p.MonthlyPrice,
+			YearlyPrice:  p.YearlyPrice,
+			TokenMonthly: p.TokenMonthly,
+		}
+	}
+
 	return ResponseDTO{
 		ID:          a.ID,
 		Name:        a.Name,
 		Description: a.Description,
 		Logo:        a.Logo,
 		URL:         a.URL,
+		Pricings:    pricings,
 		CreatedAt:   a.CreatedAt.Format("2006-01-02 15:04:05"),
 		UpdatedAt:   a.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}

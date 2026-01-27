@@ -2,12 +2,15 @@ package main
 
 import (
 	_ "app/cmd/gateway/docs"
-	_ "app/cmd/gateway/swagger/v1"
+	_ "app/cmd/gateway/swagger/v1/astro-zenith"
+	_ "app/cmd/gateway/swagger/v1/auth"
+	_ "app/cmd/gateway/swagger/v1/global"
 	"app/internal/middlewares"
 
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/proxy"
 	"github.com/gofiber/swagger"
@@ -58,7 +61,16 @@ func main() {
 	}))
 
 	// Swagger UI
-	app.Get("/swagger/*", swagger.HandlerDefault)
+	// app.Get("/swagger/*", swagger.HandlerDefault)
+	swaggerAuth := basicauth.New(basicauth.Config{
+		Users: map[string]string{
+			"admin": "Cheat1234",
+		},
+		Realm: "Restricted",
+	})
+
+	// Swagger UI (dikunci basic auth)
+	app.Get("/swagger/*", swaggerAuth, swagger.HandlerDefault)
 
 	// Semua route users v1
 	apiV1 := app.Group("/v1")
@@ -89,6 +101,13 @@ func main() {
 	pricing := apiV1.Group("/pricing")
 	pricing.Use(middlewares.SignatureClientMiddleware())
 	pricing.All("/*", func(c *fiber.Ctx) error {
+		target := globalServiceURL + c.OriginalURL()
+		return proxy.Do(c, target)
+	})
+
+	payment := apiV1.Group("/payment")
+	payment.Use(middlewares.SignatureClientMiddleware())
+	payment.All("/*", func(c *fiber.Ctx) error {
 		target := globalServiceURL + c.OriginalURL()
 		return proxy.Do(c, target)
 	})

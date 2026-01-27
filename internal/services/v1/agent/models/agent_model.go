@@ -20,6 +20,23 @@ type Agent struct {
 	URL         string    `bun:"url" json:"url"`
 	CreatedAt   time.Time `bun:",nullzero,notnull,default:current_timestamp" json:"created_at"`
 	UpdatedAt   time.Time `bun:",nullzero,notnull,default:current_timestamp" json:"updated_at"`
+	Pricings    []Pricing `bun:"rel:has-many,join:id=agents_id"`
+}
+
+type Pricing struct {
+	bun.BaseModel `bun:"table:pricing"`
+
+	ID           string    `bun:",pk"`
+	AgentsID     string    `bun:"agents_id"`
+	Name         string    `bun:"name" json:"name"`
+	Description  string    `bun:"description" json:"description"`
+	Feature      string    `bun:"feature" json:"feature"`
+	Duration     int       `bun:"duration" json:"duration"`
+	MonthlyPrice float64   `bun:"monthly_price"`
+	YearlyPrice  float64   `bun:"yearly_price"`
+	TokenMonthly int       `bun:"token_monthly"`
+	CreatedAt    time.Time `bun:",nullzero,notnull,default:current_timestamp" json:"created_at"`
+	UpdatedAt    time.Time `bun:",nullzero,notnull,default:current_timestamp" json:"updated_at"`
 }
 
 // Generate ID dan hash password otomatis sebelum insert
