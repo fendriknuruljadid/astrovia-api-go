@@ -2,55 +2,58 @@ package repository
 
 import (
 	"app/internal/packages/db"
+	orderModels "app/internal/services/v1/payment/models"
 	"app/internal/services/v1/pricing/models"
+	userModels "app/internal/services/v1/user/models"
 	"context"
 	"fmt"
 )
 
-func CreatePricing(pricing *models.Pricing) error {
-	ctx := context.Background()
-	_, err := db.DB.NewInsert().Model(pricing).Exec(ctx)
-	if err != nil {
-		fmt.Println("CreatePricing failed:", err)
-	}
-	return err
-}
-
-func GetPricings() ([]models.Pricing, error) {
-	ctx := context.Background()
-	var pricings []models.Pricing
-	err := db.DB.NewSelect().Model(&pricings).Scan(ctx)
-	if err != nil {
-		fmt.Println("GetPricings failed:", err)
-	}
-	return pricings, err
-}
-
 func GetPricingByID(id string) (*models.Pricing, error) {
 	ctx := context.Background()
 	pricing := new(models.Pricing)
-	err := db.DB.NewSelect().Model(pricing).Where("id = ?", id).Scan(ctx)
+	err := db.DB.NewSelect().Model(pricing).Where("pricing.id = ?", id).Relation("Agent").Scan(ctx)
 	if err != nil {
 		fmt.Println("GetPricingByID failed:", err)
 	}
 	return pricing, err
 }
 
-func UpdatePricing(pricing *models.Pricing) error {
-	ctx := context.Background()
-	_, err := db.DB.NewUpdate().Model(pricing).WherePK().Exec(ctx)
+func GetUserByEmailOrPhone(email, phone string) (*userModels.User, error) {
+	var user userModels.User
+
+	err := db.DB.NewSelect().
+		Model(&user).
+		Where("email = ? OR phone = ?", email, phone).
+		Limit(1).
+		Scan(context.Background())
+
 	if err != nil {
-		fmt.Println("UpdatePricing failed:", err)
+		return nil, err
 	}
+
+	return &user, nil
+}
+
+func CreateUser(user *userModels.User) error {
+	_, err := db.DB.NewInsert().
+		Model(user).
+		Exec(context.Background())
 	return err
 }
 
-func DeletePricing(id string) error {
-	ctx := context.Background()
-	pricing := &models.Pricing{ID: id}
-	_, err := db.DB.NewDelete().Model(pricing).WherePK().Exec(ctx)
-	if err != nil {
-		fmt.Println("DeletePricing failed:", err)
-	}
+func CreateOrder(order *orderModels.Order) error {
+	_, err := db.DB.NewInsert().
+		Model(order).
+		Exec(context.Background())
+	return err
+}
+
+func UpdateOrder(order *orderModels.Order) error {
+	_, err := db.DB.NewUpdate().
+		Model(order).
+		Where("id = ?", order.ID).
+		Exec(context.Background())
+
 	return err
 }

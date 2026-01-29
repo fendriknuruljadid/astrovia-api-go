@@ -112,6 +112,12 @@ func main() {
 		return proxy.Do(c, target)
 	})
 
+	callback := apiV1.Group("/callback")
+	callback.All("/*", func(c *fiber.Ctx) error {
+		target := globalServiceURL + c.OriginalURL()
+		return proxy.Do(c, target)
+	})
+
 	userAgents := apiV1.Group("/user-agents")
 	userAgents.Use(middlewares.SignatureClientMiddleware())
 	userAgents.All("/*", func(c *fiber.Ctx) error {

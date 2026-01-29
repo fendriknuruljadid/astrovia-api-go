@@ -32,6 +32,28 @@ definitions:
       video_url:
         type: string
     type: object
+  routes.CreateOrderRequest:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      payment_method:
+        type: string
+      phone:
+        type: string
+      pricing_id:
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - payment_method
+    - phone
+    - pricing_id
+    type: object
   routes.Payment:
     properties:
       amount:
@@ -577,9 +599,40 @@ paths:
       summary: Refresh Tokens
       tags:
       - Authentication
-  /v1/payment/payment-method:
+  /v1/payment/order-public:
+    post:
+      consumes:
+      - application/json
+      description: Create Order
+      parameters:
+      - description: Order info
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/routes.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/routes.CreateOrderRequest'
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Create order for subscription
+      tags:
+      - Payments
+  /v1/payment/payment-method/{id}:
     get:
       description: Get list of payment method
+      parameters:
+      - description: Pricing ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:

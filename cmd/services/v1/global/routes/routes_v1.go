@@ -13,7 +13,9 @@ func RegisterPublicRoutes(r *gin.RouterGroup) {
 	r.GET("/agents/public", agent.GetAgentsPublic)
 	r.GET("/agents/public/:id", agent.GetAgentPublicByID)
 	r.GET("/user-agents/public", userAgent.GetUserAgents)
-	r.GET("/payment/payment-method", payment.GetPaymentMethod)
+	r.GET("/payment/payment-method/:id", payment.GetPaymentMethod)
+	r.POST("/payment/order-public", payment.CreateOrderPublic)
+	r.POST("/callback/duitku", payment.CallbackDuitku)
 }
 
 func RegisterProtectedRoutes(r *gin.RouterGroup) {

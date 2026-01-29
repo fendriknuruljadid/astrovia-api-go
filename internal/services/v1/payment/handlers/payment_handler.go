@@ -11,20 +11,19 @@ import (
 	"net/http"
 	"time"
 
+	"os"
+
+	"app/internal/services/v1/payment/repository"
+	"app/internal/services/v1/pricing/models"
+
 	"github.com/gin-gonic/gin"
 )
 
 type PaymentRequest struct {
 	MerchantCode string `json:"merchantcode"`
-	Amount       int    `json:"amount"`
+	Amount       int64  `json:"amount"`
 	Datetime     string `json:"datetime"`
 	Signature    string `json:"signature"`
-}
-
-type PaymentResponse struct {
-	StatusCode int                    `json:"status_code"`
-	Message    string                 `json:"message"`
-	Data       map[string]interface{} `json:"data,omitempty"`
 }
 
 type DuitkuPaymentMethodResponse struct {
@@ -40,10 +39,19 @@ type PaymentFee struct {
 	TotalFee      string `json:"totalFee"`
 }
 
+type PaymentMethodResponse struct {
+	Pricing        *models.Pricing `json:"pricing"`
+	PaymentMethods []PaymentFee    `json:"payment_methods"`
+}
+
+var (
+	pasymentGatewayURL = os.Getenv("PAYMENT_GW_URL")
+)
+
 // Helper function untuk request ke Duitku
 func requestDuitkuPaymentMethod(
 	merchantCode, apiKey string,
-	amount int,
+	amount int64,
 ) ([]PaymentFee, error) {
 	// Generate datetime
 	datetime := time.Now().Format("2006-01-02 15:04:05")
@@ -62,7 +70,7 @@ func requestDuitkuPaymentMethod(
 
 	payloadBytes, _ := json.Marshal(payload)
 
-	url := "https://sandbox.duitku.com/webapi/api/merchant/paymentmethod/getpaymentmethod"
+	url := pasymentGatewayURL + "paymentmethod/getpaymentmethod"
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payloadBytes))
 	if err != nil {
 		return nil, err
@@ -107,10 +115,16 @@ func requestDuitkuPaymentMethod(
 }
 
 func GetPaymentMethod(c *gin.Context) {
-	merchantCode := "DS27467"
-	apiKey := "c2376b872e008811acdc47158992f2a2"
-	amount := 89000
+	merchantCode := os.Getenv("MERCHANT_CODE")
+	apiKey := os.Getenv("PG_API_KEY")
+	id := c.Param("id")
+	pricing, err := repository.GetPricingByID(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Error(500, "Package Not Found", err.Error()))
+		return
+	}
 
+	amount := pricing.MonthlyPrice
 	data, err := requestDuitkuPaymentMethod(merchantCode, apiKey, amount)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, response.Error(
@@ -120,8 +134,11 @@ func GetPaymentMethod(c *gin.Context) {
 		))
 		return
 	}
-
+	result := PaymentMethodResponse{
+		Pricing:        pricing,
+		PaymentMethods: data,
+	}
 	c.JSON(http.StatusOK, response.Success(
-		200, "success", data,
+		200, "success", result,
 	))
 }

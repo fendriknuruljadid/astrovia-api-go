@@ -857,7 +857,49 @@
                 "responses": {}
             }
         },
-        "/v1/payment/payment-method": {
+        "/v1/payment/order-public": {
+            "post": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Create Order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Create order for subscription",
+                "parameters": [
+                    {
+                        "description": "Order info",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.CreateOrderRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/routes.CreateOrderRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/payment/payment-method/{id}": {
             "get": {
                 "security": [
                     {
@@ -875,6 +917,15 @@
                     "Payments"
                 ],
                 "summary": "Get all payment method",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Pricing ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1542,6 +1593,37 @@
                     "type": "string"
                 },
                 "video_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "routes.CreateOrderRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "first_name",
+                "last_name",
+                "payment_method",
+                "phone",
+                "pricing_id"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "payment_method": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "pricing_id": {
                     "type": "string"
                 }
             }

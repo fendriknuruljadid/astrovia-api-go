@@ -17,5 +17,6 @@ type Payment struct {
 // @Security X-Timestamp
 // @Produce json
 // @Success 200 {array} routes.Payment
-// @Router /v1/payment/payment-method [get]
+// @Param id path string true "Pricing ID"
+// @Router /v1/payment/payment-method/{id} [get]
 func GetPaymentMethodHandler(c *fiber.Ctx) error { return nil }
