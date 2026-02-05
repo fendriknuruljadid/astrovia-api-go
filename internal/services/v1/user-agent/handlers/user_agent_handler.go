@@ -34,7 +34,7 @@ func CreateUserAgent(c *gin.Context) {
 		AgentsID: req.AgentsID,
 		Tokens:   req.Tokens,
 		Active:   req.Active,
-		Expired:  req.Expired,
+		// Expired:  req.Expired,
 	}
 
 	if err := repository.CreateUserAgent(&userAgent); err != nil {
@@ -101,9 +101,9 @@ func UpdateUserAgent(c *gin.Context) {
 	if req.Active != nil {
 		userAgent.Active = *req.Active
 	}
-	if req.Expired != nil {
-		userAgent.Expired = *req.Expired
-	}
+	// if req.Expired != nil {
+	// 	userAgent.Expired = *req.Expired
+	// }
 
 	if err := repository.UpdateUserAgent(userAgent); err != nil {
 		c.Error(errors.NewInternal(utils.ParseDBError(err)))

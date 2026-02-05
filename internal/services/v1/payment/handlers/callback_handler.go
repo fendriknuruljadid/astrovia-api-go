@@ -3,13 +3,24 @@ package handlers
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"net/http"
 	"os"
+
+	"app/internal/services/v1/payment/repository"
 
 	"github.com/gin-gonic/gin"
 )
 
 func CallbackDuitku(c *gin.Context) {
+	if err := c.Request.ParseForm(); err != nil {
+		c.JSON(400, gin.H{"message": "invalid form"})
+		return
+	}
+
+	fmt.Println("FORM CALLBACK:")
+	fmt.Println(c.Request.Form)
+
 	apiKey := os.Getenv("PG_API_KEY")
 	merchantCode := c.PostForm("merchantCode")
 	amount := c.PostForm("amount")
@@ -46,7 +57,6 @@ func CallbackDuitku(c *gin.Context) {
 		return
 	}
 
-	// Generate signature
 	params := merchantCode + amount + merchantOrderId + apiKey
 	hash := md5.Sum([]byte(params))
 	calcSignature := hex.EncodeToString(hash[:])
@@ -58,12 +68,10 @@ func CallbackDuitku(c *gin.Context) {
 		})
 		return
 	}
-
-	// Callback tervalidasi
-	// TODO: update status transaksi di database
-
+	repository.CreatePayment(merchantOrderId, publisherOrderId, issuerCode, resultCode)
 	c.JSON(http.StatusOK, gin.H{
 		"status":  "success",
 		"message": "Callback validated",
 	})
+
 }

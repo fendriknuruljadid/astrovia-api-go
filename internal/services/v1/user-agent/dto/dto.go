@@ -24,7 +24,7 @@ type ResponseDTO struct {
 	AgentsID  string `json:"agents_id"`
 	Tokens    int64  `json:"tokens"`
 	Active    bool   `json:"active"`
-	Expired   bool   `json:"expired"`
+	Expired   string `json:"expired"`
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 }
@@ -36,7 +36,7 @@ func ToResponseDTO(ua *models.UserAgent) ResponseDTO {
 		AgentsID:  ua.AgentsID,
 		Tokens:    ua.Tokens,
 		Active:    ua.Active,
-		Expired:   ua.Expired,
+		Expired:   ua.Expired.Format("2006-01-02"),
 		CreatedAt: ua.CreatedAt.Format("2006-01-02 15:04:05"),
 		UpdatedAt: ua.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
