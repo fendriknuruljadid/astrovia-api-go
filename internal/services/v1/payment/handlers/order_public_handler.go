@@ -148,5 +148,20 @@ func CreateOrderPublic(c *gin.Context) {
 	expiredAt := time.Now().Add(10 * time.Minute)
 	order.ExpiredAt = &expiredAt
 	_ = repository.UpdateOrder(order)
+
+	// loc, err := time.LoadLocation("Asia/Jakarta")
+	// if err != nil {
+	// 	// fallback aman
+	// 	loc = time.FixedZone("GMT+7", 7*60*60)
+	// }
+	// expiredLocal := order.ExpiredAt.In(loc)
+	// mailer.SendInvoiceEmailAsync(req.Email, map[string]any{
+	// 	"Name":    req.FirstName,
+	// 	"Invoice": order.InvoiceNumber,
+	// 	"Amount":  order.Amount,
+	// 	"Status":  "PENDING",
+	// 	"Expired": expiredLocal.Format("02 Jan 2006 15:04"),
+	// })
+
 	c.JSON(200, response.Success(200, "success", order))
 }

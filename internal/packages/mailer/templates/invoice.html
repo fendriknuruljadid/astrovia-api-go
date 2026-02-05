@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Invoice</title>
+</head>
+<body style="font-family: Arial, sans-serif;">
+  <h2>Halo {{.Name}}</h2>
+
+  <p>Invoice kamu sudah dibuat.</p>
+
+  <table>
+    <tr>
+      <td>Invoice</td>
+      <td>: {{.Invoice}}</td>
+    </tr>
+    <tr>
+      <td>Amount</td>
+      <td>: Rp {{.Amount}}</td>
+    </tr>
+    <tr>
+      <td>Status</td>
+      <td>: {{.Status}}</td>
+    </tr>
+  </table>
+
+  <p>Silakan lakukan pembayaran sebelum:</p>
+  <b>{{.Expired}}</b>
+
+  <br><br>
+  <small>Terima kasih 🙏</small>
+</body>
+</html>
