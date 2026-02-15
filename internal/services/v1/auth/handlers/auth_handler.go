@@ -15,12 +15,20 @@ import (
 	"app/internal/packages/response"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
+// type AuthRequest struct {
+// 	Provider   string `json:"provider"`   // hanya: google
+// 	OAuthToken string `json:"oauthToken"` // access_token dari Google Sign-In
+// 	Email      string `json:"email"`      // optional (Google bisa kirim)
+// }
+
 type AuthRequest struct {
-	Provider   string `json:"provider"`   // hanya: google
-	OAuthToken string `json:"oauthToken"` // access_token dari Google Sign-In
-	Email      string `json:"email"`      // optional (Google bisa kirim)
+	Provider   string `json:"provider"` // google | local
+	OAuthToken string `json:"oauthToken,omitempty"`
+	Email      string `json:"email"`
+	Password   string `json:"password,omitempty"`
 }
 
 type RefreshTokenRequest struct {
@@ -34,41 +42,120 @@ type GoogleTokenInfo struct {
 	Audience      string `json:"aud"`
 }
 
+// func Auth(c *gin.Context) {
+// 	var req AuthRequest
+// 	if err := c.ShouldBindJSON(&req); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+// 		return
+// 	}
+
+// 	// Provider wajib Google
+// 	if req.Provider != "google" {
+// 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Only Google login allowed"})
+// 		return
+// 	}
+
+// 	if req.OAuthToken == "" {
+// 		c.JSON(http.StatusUnauthorized, gin.H{"error": "OAuth token required"})
+// 		return
+// 	}
+
+// 	// === Validasi token Google ===
+// 	googleUser, err := verifyGoogleToken(req.OAuthToken)
+// 	if err != nil || googleUser.Email == "" {
+// 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Google OAuth token"})
+// 		return
+// 	}
+
+// 	// === Cek user dari database ===
+// 	var user models.User
+// 	err = db.DB.NewSelect().Model(&user).Where("email = ?", googleUser.Email).Scan(c)
+
+// 	if err != nil { // user belum ada → auto register
+// 		user = models.User{
+// 			Email:      googleUser.Email,
+// 			Name:       googleUser.Email[0 : len(googleUser.Email)-len("@gmail.com")],
+// 			Provider:   "google",
+// 			Password:   nil, // kosong krn oauth
+// 			IsVerified: true,
+// 		}
+
+// 		_, err = db.DB.NewInsert().Model(&user).Exec(c)
+// 		if err != nil {
+// 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+// 			return
+// 		}
+// 	}
+
+// 	// === Generate JWT ===
+// 	deviceId := c.GetHeader("X-DeviceId")
+// 	token, err := middlewares.GenerateToken(&user, deviceId)
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+// 		return
+// 	}
+// 	c.JSON(200, response.Success(200, "success", gin.H{
+// 		"success":      true,
+// 		"access_token": token,
+// 		"token_type":   "Bearer",
+// 		"expires_in":   3600,
+// 		"user": gin.H{
+// 			"id":       user.ID,
+// 			"email":    user.Email,
+// 			"name":     user.Name,
+// 			"provider": "google",
+// 		},
+// 	}))
+
+// }
+
 func Auth(c *gin.Context) {
 	var req AuthRequest
+
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
 
-	// Provider wajib Google
-	if req.Provider != "google" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Only Google login allowed"})
-		return
+	switch req.Provider {
+
+	case "google":
+		handleGoogleLogin(c, req)
+
+	case "local":
+		handleLocalLogin(c, req)
+
+	default:
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unsupported provider"})
 	}
+}
+
+func handleGoogleLogin(c *gin.Context, req AuthRequest) {
 
 	if req.OAuthToken == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "OAuth token required"})
 		return
 	}
 
-	// === Validasi token Google ===
 	googleUser, err := verifyGoogleToken(req.OAuthToken)
 	if err != nil || googleUser.Email == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Google OAuth token"})
 		return
 	}
 
-	// === Cek user dari database ===
 	var user models.User
-	err = db.DB.NewSelect().Model(&user).Where("email = ?", googleUser.Email).Scan(c)
+	err = db.DB.NewSelect().
+		Model(&user).
+		Where("email = ?", googleUser.Email).
+		Scan(c)
 
-	if err != nil { // user belum ada → auto register
+	if err != nil { // auto register
 		user = models.User{
-			Email:    googleUser.Email,
-			Name:     googleUser.Email[0 : len(googleUser.Email)-len("@gmail.com")],
-			Provider: "google",
-			Password: "", // kosong krn oauth
+			Email:      googleUser.Email,
+			Name:       googleUser.Email,
+			Provider:   "google",
+			Password:   nil,
+			IsVerified: true,
 		}
 
 		_, err = db.DB.NewInsert().Model(&user).Exec(c)
@@ -78,13 +165,61 @@ func Auth(c *gin.Context) {
 		}
 	}
 
-	// === Generate JWT ===
+	generateLoginResponse(c, &user)
+}
+
+func handleLocalLogin(c *gin.Context, req AuthRequest) {
+
+	if req.Email == "" || req.Password == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Email and password required"})
+		return
+	}
+
+	var user models.User
+	err := db.DB.NewSelect().
+		Model(&user).
+		Where("email = ?", req.Email).
+		Scan(c)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		return
+	}
+
+	if user.Password == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Account registered via OAuth"})
+		return
+	}
+
+	// compare password
+	err = bcrypt.CompareHashAndPassword(
+		[]byte(*user.Password),
+		[]byte(req.Password),
+	)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		return
+	}
+
+	if !user.IsVerified {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Email not verified"})
+		return
+	}
+
+	generateLoginResponse(c, &user)
+}
+
+func generateLoginResponse(c *gin.Context, user *models.User) {
+
 	deviceId := c.GetHeader("X-DeviceId")
-	token, err := middlewares.GenerateToken(&user, deviceId)
+
+	token, err := middlewares.GenerateToken(user, deviceId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return
 	}
+
 	c.JSON(200, response.Success(200, "success", gin.H{
 		"success":      true,
 		"access_token": token,
@@ -94,10 +229,9 @@ func Auth(c *gin.Context) {
 			"id":       user.ID,
 			"email":    user.Email,
 			"name":     user.Name,
-			"provider": "google",
+			"provider": user.Provider,
 		},
 	}))
-
 }
 
 func RefreshToken(c *gin.Context) {

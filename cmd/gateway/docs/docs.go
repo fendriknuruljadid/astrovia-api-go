@@ -1424,6 +1424,186 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/users/check": {
+            "post": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "Check users exist",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Check users exist by email",
+                "parameters": [
+                    {
+                        "description": "User info",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/routes.User"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/users/create-password": {
+            "post": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "create password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create password for user",
+                "parameters": [
+                    {
+                        "description": "User info",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/routes.User"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/users/resend-verification": {
+            "post": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "resend OTP",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Resend OTP",
+                "parameters": [
+                    {
+                        "description": "User info",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/routes.User"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/users/verify-verification": {
+            "post": {
+                "security": [
+                    {
+                        "X-Signature": []
+                    },
+                    {
+                        "X-Timestamp": []
+                    }
+                ],
+                "description": "verify otp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Verify OTP",
+                "parameters": [
+                    {
+                        "description": "User info",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/routes.User"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/users/{id}": {
             "get": {
                 "security": [

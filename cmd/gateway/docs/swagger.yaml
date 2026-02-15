@@ -1002,6 +1002,114 @@ paths:
       summary: Update user
       tags:
       - Users
+  /v1/users/check:
+    post:
+      consumes:
+      - application/json
+      description: Check users exist
+      parameters:
+      - description: User info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/routes.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/routes.User'
+            type: array
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Check users exist by email
+      tags:
+      - Users
+  /v1/users/create-password:
+    post:
+      consumes:
+      - application/json
+      description: create password
+      parameters:
+      - description: User info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/routes.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/routes.User'
+            type: array
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Create password for user
+      tags:
+      - Users
+  /v1/users/resend-verification:
+    post:
+      consumes:
+      - application/json
+      description: resend OTP
+      parameters:
+      - description: User info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/routes.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/routes.User'
+            type: array
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Resend OTP
+      tags:
+      - Users
+  /v1/users/verify-verification:
+    post:
+      consumes:
+      - application/json
+      description: verify otp
+      parameters:
+      - description: User info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/routes.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/routes.User'
+            type: array
+      security:
+      - X-Signature: []
+      - X-Timestamp: []
+      summary: Verify OTP
+      tags:
+      - Users
 securityDefinitions:
   BearerAuth:
     description: 'Format: Bearer <token>'

@@ -48,3 +48,31 @@ func SendInvoiceEmailAsync(to string, data map[string]any) {
 		}
 	}()
 }
+
+func SendOTPEmail(to string, otp string) error {
+
+	from := os.Getenv("SMTP_EMAIL")
+	password := os.Getenv("SMTP_PASSWORD")
+
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+
+	auth := smtp.PlainAuth("", from, password, smtpHost)
+
+	subject := "Your Verification Code"
+	body := fmt.Sprintf("Your verification code is: %s\n\nThis code expires in 10 minutes.", otp)
+
+	message := []byte("Subject: " + subject + "\r\n" +
+		"\r\n" +
+		body)
+
+	err := smtp.SendMail(
+		smtpHost+":"+smtpPort,
+		auth,
+		from,
+		[]string{to},
+		message,
+	)
+
+	return err
+}

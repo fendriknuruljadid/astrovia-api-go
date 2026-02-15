@@ -9,6 +9,10 @@ import (
 
 func RegisterPublicRoutes(r *gin.RouterGroup) {
 	r.POST("/users", handlers.CreateUser)
+	r.POST("/users/check", handlers.CheckUser)
+	r.POST("/users/create-password", handlers.CreatePassword)
+	r.POST("/users/verify-verification", handlers.VerifyOTP)
+	r.POST("/users/resend-verification", handlers.ResendOTP)
 	r.POST("/auth/generate-token", auth.Auth)
 	r.POST("/auth/refresh-token", auth.RefreshToken)
 	r.POST("/auth/logout", auth.Logout)
