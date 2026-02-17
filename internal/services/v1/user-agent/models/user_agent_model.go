@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"app/internal/packages/utils"
+	"app/internal/services/v1/pricing/models"
 
 	"github.com/uptrace/bun"
 )
@@ -13,14 +14,15 @@ import (
 type UserAgent struct {
 	bun.BaseModel `bun:"table:user_agents"`
 
-	ID        string    `bun:"id,pk,notnull" json:"id"`
-	UsersID   string    `bun:"users_id,notnull" json:"users_id"`
-	AgentsID  string    `bun:"agents_id,notnull" json:"agents_id"`
-	Active    bool      `bun:"active,notnull,default:false" json:"active"`
-	Expired   time.Time `bun:"expired,notnull,default:false" json:"expired"`
-	Tokens    int64     `bun:"tokens,notnull,default:0" json:"tokens"`
-	CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp" json:"created_at"`
-	UpdatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp" json:"updated_at"`
+	ID        string          `bun:"id,pk,notnull" json:"id"`
+	UsersID   string          `bun:"users_id,notnull" json:"users_id"`
+	AgentsID  string          `bun:"agents_id,notnull" json:"agents_id"`
+	PricingID string          `bun:"pricing_id,nullzero" json:"pricing_id"`
+	Pricing   *models.Pricing `bun:"rel:belongs-to,join:pricing_id=id"`
+	Active    bool            `bun:"active,notnull,default:false" json:"active"`
+	Expired   time.Time       `bun:"expired,notnull,default:false" json:"expired"`
+	CreatedAt time.Time       `bun:",nullzero,notnull,default:current_timestamp" json:"created_at"`
+	UpdatedAt time.Time       `bun:",nullzero,notnull,default:current_timestamp" json:"updated_at"`
 }
 
 // Generate ID dan hash password otomatis sebelum insert

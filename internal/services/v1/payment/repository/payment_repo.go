@@ -6,12 +6,18 @@ import (
 	"app/internal/services/v1/pricing/models"
 	userAgentModels "app/internal/services/v1/user-agent/models"
 	userModels "app/internal/services/v1/user/models"
+	"database/sql"
+	"errors"
+
 	"time"
 
 	"context"
 	"fmt"
 
-	"github.com/google/uuid"
+	"strings"
+
+	"app/internal/packages/utils"
+
 	"github.com/uptrace/bun"
 )
 
@@ -41,10 +47,35 @@ func GetUserByEmailOrPhone(email, phone string) (*userModels.User, error) {
 	return &user, nil
 }
 
+func GetUserByID(id string) (*userModels.User, error) {
+	var user userModels.User
+
+	err := db.DB.NewSelect().
+		Model(&user).
+		Where("id = ? ", id).
+		Limit(1).
+		Scan(context.Background())
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 func CreateUser(user *userModels.User) error {
 	_, err := db.DB.NewInsert().
 		Model(user).
 		Exec(context.Background())
+	return err
+}
+
+func UpdateUser(user *userModels.User) error {
+	_, err := db.DB.NewUpdate().
+		Model(user).
+		Where("id = ?", user.ID).
+		Exec(context.Background())
+
 	return err
 }
 
@@ -63,6 +94,7 @@ func UpdateOrder(order *orderModels.Order) error {
 
 	return err
 }
+
 func CreatePayment(orderId string, publisherOrderId string, issuerCode string, resultCode string) (*orderModels.Order, error) {
 	ctx := context.Background()
 
@@ -92,7 +124,6 @@ func CreatePayment(orderId string, publisherOrderId string, issuerCode string, r
 		}
 
 		now := time.Now()
-		expiredAt := now.AddDate(0, 1, 0)
 
 		// 4. Update order → PAID
 		if resultCode == "00" {
@@ -110,21 +141,51 @@ func CreatePayment(orderId string, publisherOrderId string, issuerCode string, r
 				Exec(ctx); err != nil {
 				return err
 			}
+			existingUserAgent := new(userAgentModels.UserAgent)
+			err := tx.NewSelect().
+				Model(existingUserAgent).
+				Where("users_id = ?", order.UsersID).
+				Where("agents_id = ?", order.AgentsID).
+				Limit(1).
+				Scan(ctx)
+			now := time.Now()
+			oneMonth := now.AddDate(0, 1, 0)
+			if err == nil {
+				var newExpired time.Time
+				if existingUserAgent.Expired.After(now) {
+					newExpired = existingUserAgent.Expired.AddDate(0, 1, 0)
+				} else {
+					newExpired = oneMonth
+				}
 
-			// 5. Create user agent
-			userAgent := &userAgentModels.UserAgent{
-				ID:       uuid.NewString(),
-				UsersID:  order.UsersID,
-				AgentsID: order.AgentsID,
-				Active:   true,
-				Expired:  expiredAt,
-				Tokens:   int64(pricing.TokenMonthly),
-				// ExpiredAt: ,
-			}
+				existingUserAgent.Expired = newExpired
+				existingUserAgent.Active = true
 
-			if _, err := tx.NewInsert().
-				Model(userAgent).
-				Exec(ctx); err != nil {
+				if _, err := tx.NewUpdate().
+					Model(existingUserAgent).
+					Column("expired", "active").
+					WherePK().
+					Exec(ctx); err != nil {
+					return err
+				}
+
+			} else if errors.Is(err, sql.ErrNoRows) {
+				userAgent := &userAgentModels.UserAgent{
+					ID:       "usr-agn-" + strings.ToLower(utils.NewULID()),
+					UsersID:  order.UsersID,
+					AgentsID: order.AgentsID,
+					Active:   true,
+					Expired:  oneMonth,
+					// Tokens:   int64(pricing.TokenMonthly),
+				}
+
+				if _, err := tx.NewInsert().
+					Model(userAgent).
+					Exec(ctx); err != nil {
+					return err
+				}
+
+			} else {
 				return err
 			}
 		} else {

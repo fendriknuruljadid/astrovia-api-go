@@ -32,7 +32,6 @@ func CreateUserAgent(c *gin.Context) {
 	userAgent := models.UserAgent{
 		UsersID:  req.UsersID,
 		AgentsID: req.AgentsID,
-		Tokens:   req.Tokens,
 		Active:   req.Active,
 		// Expired:  req.Expired,
 	}
@@ -95,9 +94,7 @@ func UpdateUserAgent(c *gin.Context) {
 	if req.AgentsID != nil {
 		userAgent.AgentsID = *req.AgentsID
 	}
-	if req.Tokens != nil {
-		userAgent.Tokens = *req.Tokens
-	}
+
 	if req.Active != nil {
 		userAgent.Active = *req.Active
 	}

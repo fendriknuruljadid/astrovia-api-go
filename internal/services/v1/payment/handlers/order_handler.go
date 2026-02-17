@@ -2,12 +2,8 @@ package handlers
 
 import (
 	"app/internal/packages/response"
-	"bytes"
 	"crypto/md5"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"time"
 
 	"os"
@@ -15,54 +11,14 @@ import (
 	"app/internal/services/v1/payment/dto"
 	orderModels "app/internal/services/v1/payment/models"
 	"app/internal/services/v1/payment/repository"
-	userModels "app/internal/services/v1/user/models"
 
 	"github.com/gin-gonic/gin"
 )
 
-func requestDuitkuInquiry(reqData dto.DuitkuInquiryRequest) (*dto.DuitkuInquiryResponse, error) {
-	url := pasymentGatewayURL + "v2/inquiry"
-
-	payload, _ := json.Marshal(reqData)
-
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{Timeout: 30 * time.Second}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("RAW DUITKU RESPONSE:")
-	fmt.Println(string(body))
-
-	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("duitku http error %d", resp.StatusCode)
-	}
-
-	var result dto.DuitkuInquiryResponse
-	if err := json.Unmarshal(body, &result); err != nil {
-		return nil, err
-	}
-
-	if result.StatusCode != "00" {
-		return nil, fmt.Errorf("duitku error: %s", result.StatusMessage)
-	}
-
-	return &result, nil
-}
-
-func CreateOrderPublic(c *gin.Context) {
+func CreateOrder(c *gin.Context) {
 	merchantCode := os.Getenv("MERCHANT_CODE")
 	apiKey := os.Getenv("PG_API_KEY")
-
+	userID := c.GetString("user_id")
 	var req dto.CreateOrderRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(400, response.Error(400, "invalid request", err.Error()))
@@ -73,19 +29,18 @@ func CreateOrderPublic(c *gin.Context) {
 		c.JSON(404, response.Error(404, "Package not found", err.Error()))
 		return
 	}
-
-	user, err := repository.GetUserByEmailOrPhone(req.Email, req.Phone)
+	user, err := repository.GetUserByID(userID)
 	if err != nil {
-		user = &userModels.User{
-			FirstName: req.FirstName,
-			LastName:  req.LastName,
-			Email:     req.Email,
-			Phone:     req.Phone,
-		}
-		if err := repository.CreateUser(user); err != nil {
-			c.JSON(500, response.Error(500, "failed create user", err.Error()))
-			return
-		}
+		c.JSON(404, response.Error(404, "user not found", err.Error()))
+		return
+	}
+	user.FirstName = req.FirstName
+	user.LastName = req.LastName
+	user.Phone = req.Phone
+
+	if err := repository.UpdateUser(user); err != nil {
+		c.JSON(500, response.Error(500, "failed update user", err.Error()))
+		return
 	}
 
 	order := &orderModels.Order{

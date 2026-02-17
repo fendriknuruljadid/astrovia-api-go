@@ -68,7 +68,11 @@ func CallbackDuitku(c *gin.Context) {
 		})
 		return
 	}
-	repository.CreatePayment(merchantOrderId, publisherOrderId, issuerCode, resultCode)
+	_, err := repository.CreatePayment(merchantOrderId, publisherOrderId, issuerCode, resultCode)
+	if err != nil {
+		fmt.Println("CREATE PAYMENT ERROR:", err)
+
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  "success",
 		"message": "Callback validated",

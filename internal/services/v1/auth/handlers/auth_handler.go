@@ -226,10 +226,13 @@ func generateLoginResponse(c *gin.Context, user *models.User) {
 		"token_type":   "Bearer",
 		"expires_in":   3600,
 		"user": gin.H{
-			"id":       user.ID,
-			"email":    user.Email,
-			"name":     user.Name,
-			"provider": user.Provider,
+			"id":         user.ID,
+			"email":      user.Email,
+			"name":       user.Name,
+			"provider":   user.Provider,
+			"first_name": user.FirstName,
+			"last_name":  user.LastName,
+			"phone":      user.Phone,
 		},
 	}))
 }

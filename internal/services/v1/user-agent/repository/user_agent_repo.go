@@ -29,7 +29,9 @@ func GetUserAgents() ([]models.UserAgent, error) {
 func GetUserAgentByID(id string) (*models.UserAgent, error) {
 	ctx := context.Background()
 	user := new(models.UserAgent)
-	err := db.DB.NewSelect().Model(user).Where("id = ?", id).Scan(ctx)
+	err := db.DB.NewSelect().
+		// Relation("Pricing").
+		Model(user).Where("id = ?", id).Scan(ctx)
 	if err != nil {
 		fmt.Println("GetUserAgentByID failed:", err)
 	}

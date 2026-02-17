@@ -38,4 +38,6 @@ func RegisterProtectedRoutes(r *gin.RouterGroup) {
 	r.PUT("/user-agents/:id", userAgent.UpdateUserAgent)
 	r.DELETE("/user-agents/:id", userAgent.DeleteUserAgent)
 	r.POST("/user-agents", userAgent.CreateUserAgent)
+
+	r.POST("/payment/order", payment.CreateOrder)
 }
