@@ -11,7 +11,7 @@ COPY internal/services/v1/astro-zenith ./internal/services/v1/astro-zenith
 COPY internal/packages ./internal/packages
 COPY internal/middlewares ./internal/middlewares
 COPY internal/services/v1/user ./internal/services/v1/user
-COPY internal/services/v1/user ./internal/services/v1/user-agent
+COPY internal/services/v1/user-agent ./internal/services/v1/user-agent
 COPY internal/services/v1/auth ./internal/services/v1/auth
 
 RUN go build -o astro-zenith-service ./cmd/services/v1/astro-zenith
