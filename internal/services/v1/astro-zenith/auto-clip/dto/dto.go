@@ -2,12 +2,18 @@ package dto
 
 import (
 	"app/internal/services/v1/astro-zenith/auto-clip/models"
+	"encoding/json"
 	"time"
 )
 
 type CaptionPresetDTO struct {
 	PresetName string `json:"preset_name" binding:"required"`
 	Position   string `json:"position" binding:"required"`
+}
+type VideoProgress struct {
+	Stage   string `json:"stage"`
+	Percent int    `json:"percent"`
+	Message string `json:"message"`
 }
 
 type DurationPresetDTO struct {
@@ -50,7 +56,8 @@ type ResponseDTO struct {
 	Done           bool              `json:"done"`
 	CreatedAt      string            `json:"created_at"`
 	UpdatedAt      string            `json:"updated_at"`
-	Clips          []ClipResponseDTO `json:"clips"` // <-- tambahkan ini
+	VideoProgress  VideoProgress     `json:"video_progress"`
+	Clips          []ClipResponseDTO `json:"clips"`
 }
 
 type ClipResponseDTO struct {
@@ -78,6 +85,10 @@ func ToResponseDTO(v *models.Videos) ResponseDTO {
 			Status:     c.Status,
 		}
 	}
+	var progress VideoProgress
+	if len(v.VideoProgress) > 0 {
+		_ = json.Unmarshal(v.VideoProgress, &progress)
+	}
 	return ResponseDTO{
 		ID:             v.ID,
 		DateUpload:     v.DateUpload.Format(time.DateTime),
@@ -92,6 +103,7 @@ func ToResponseDTO(v *models.Videos) ResponseDTO {
 		Done:           v.Done,
 		CreatedAt:      v.CreatedAt.Format(time.DateTime),
 		UpdatedAt:      v.UpdatedAt.Format(time.DateTime),
+		VideoProgress:  progress,
 		Clips:          clips,
 	}
 }

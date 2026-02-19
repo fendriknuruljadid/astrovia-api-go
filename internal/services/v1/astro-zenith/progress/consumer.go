@@ -6,6 +6,7 @@ import (
 
 	"app/internal/packages/redis"
 	ws "app/internal/packages/websocket"
+	"app/internal/services/v1/astro-zenith/auto-clip/repository"
 )
 
 type ProgressEvent struct {
@@ -33,7 +34,21 @@ func StartConsumer() {
 		if evt.VideoID == "" {
 			continue
 		}
+		log.Println("RAW PAYLOAD:", msg.Payload)
 
+		progress := repository.VideoProgress{
+			Stage:   evt.Stage,
+			Percent: evt.Percent,
+			Message: evt.Message,
+		}
+
+		// if evt.Percent%5 == 0 || evt.Percent == 100 {
+		go func() {
+			if err := repository.UpdateVideoProgress(evt.VideoID, progress); err != nil {
+				log.Println("update progress failed:", err)
+			}
+		}()
+		// }
 		// Update DB
 		// if err := repository.UpdateVideoProgress(
 		//     evt.VideoID,

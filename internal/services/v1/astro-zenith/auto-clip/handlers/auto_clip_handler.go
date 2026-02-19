@@ -49,12 +49,13 @@ func CreateVideos(c *gin.Context) {
 		c.JSON(400, response.Error(400, "invalid duration preset", err.Error()))
 		return
 	}
+	uAgent, err := repository.GetUserAgentByUser(uid)
 	videos := models.Videos{
 		VideoUrl:       req.VideoUrl,
 		Thumbnail:      req.Thumbnail,
 		VideoTitle:     req.VideoTitle,
 		UsersID:        uid,
-		UserAgentsID:   "usr-agn-01kd52hz2wpw5vsm306m2dj674",
+		UserAgentsID:   uAgent.ID,
 		AspectRatio:    req.AspectRatio,
 		ResizeMode:     req.ResizeMode,
 		OutputType:     req.OutputType,
@@ -80,7 +81,17 @@ func CreateVideos(c *gin.Context) {
 }
 
 func GetVideos(c *gin.Context) {
-	videos, err := repository.GetVideos()
+	user, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(401, response.Error(401, "user ID not found", nil))
+		return
+	}
+	uid, ok := user.(string)
+	if !ok {
+		c.JSON(500, response.Error(500, "invalid user id type", nil))
+		return
+	}
+	videos, err := repository.GetVideos(uid)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Error(500, "Server internal error", err.Error()))
 		return

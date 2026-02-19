@@ -46,6 +46,7 @@ type Videos struct {
 	OutputType     string          `bun:"output_type" json:"output_type"`
 	CaptionPreset  json.RawMessage `bun:"caption_preset,type:jsonb" json:"caption_preset"`
 	DurationPreset json.RawMessage `bun:"duration_preset,type:jsonb" json:"duration_preset"`
+	VideoProgress json.RawMessage `bun:"video_progress,type:jsonb" json:"video_progress"`
 	CreatedAt      time.Time       `bun:"created_at,nullzero,notnull,default:current_timestamp" json:"created_at"`
 	UpdatedAt      time.Time       `bun:"updated_at,nullzero,notnull,default:current_timestamp" json:"updated_at"`
 }
